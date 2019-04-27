@@ -84,6 +84,9 @@ public class TooltipHandler
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
+		if (event == null || event.entityPlayer == null)
+			return;
+
 		if (ModConfig.FOOD_MODIFIER_ENABLED && event.itemStack != null && FoodHelper.isValidFood(event.itemStack))
 		{
 			int totalFoodEaten = FoodHistory.get(event.entityPlayer).totalFoodsEatenAllTime;
