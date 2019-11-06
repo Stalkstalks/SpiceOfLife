@@ -31,10 +31,12 @@ public class FoodModifier
 				actualFood = ((ItemFoodContainer) event.food.getItem()).getBestFoodForPlayerToEat(event.food, event.player);
 			}
 
-			float modifier = FoodModifier.getFoodModifier(event.player, actualFood);
-			FoodValues modifiedFoodValues = FoodModifier.getModifiedFoodValues(event.foodValues, modifier);
+			if (actualFood != null) {
+				float modifier = FoodModifier.getFoodModifier(event.player, actualFood);
+				FoodValues modifiedFoodValues = FoodModifier.getModifiedFoodValues(event.foodValues, modifier);
 
-			event.foodValues = modifiedFoodValues;
+				event.foodValues = modifiedFoodValues;
+			}
 		}
 	}
 
@@ -49,16 +51,18 @@ public class FoodModifier
 				actualFood = ((ItemFoodContainer) event.item.getItem()).getBestFoodForPlayerToEat(event.item, event.entityPlayer);
 			}
 
-			float nutritionalValue = FoodModifier.getFoodModifier(event.entityPlayer, actualFood);
-			float denominator = (float) Math.pow(nutritionalValue, ModConfig.FOOD_EATING_SPEED_MODIFIER);
+			if (actualFood != null) {
+				float nutritionalValue = FoodModifier.getFoodModifier(event.entityPlayer, actualFood);
+				float denominator = (float) Math.pow(nutritionalValue, ModConfig.FOOD_EATING_SPEED_MODIFIER);
 
-			if (denominator > 0)
-				event.duration = (int) (event.duration / denominator);
-			else
-				event.duration = Short.MAX_VALUE;
+				if (denominator > 0)
+					event.duration = (int) (event.duration / denominator);
+				else
+					event.duration = Short.MAX_VALUE;
 
-			if (ModConfig.FOOD_EATING_DURATION_MAX > 0)
-				event.duration = Math.min(event.duration, ModConfig.FOOD_EATING_DURATION_MAX);
+				if (ModConfig.FOOD_EATING_DURATION_MAX > 0)
+					event.duration = Math.min(event.duration, ModConfig.FOOD_EATING_DURATION_MAX);
+			}
 		}
 	}
 
@@ -92,7 +96,8 @@ public class FoodModifier
 		FoodValues totalFoodValues = foodHistory.getTotalFoodValuesForFoodGroup(food, foodGroup);
 		FoodValues foodValues = FoodValues.get(food);
 
-		BigDecimal result = effectiveFoodModifier.expression.with("count", new BigDecimal(count))
+		if (foodValues != null) {
+			BigDecimal result = effectiveFoodModifier.expression.with("count", new BigDecimal(count))
 				.and("cur_history_length", new BigDecimal(historySize))
 				.and("food_hunger_value", new BigDecimal(foodValues.hunger))
 				.and("food_saturation_mod", new BigDecimal(foodValues.saturationModifier))
@@ -108,7 +113,8 @@ public class FoodModifier
 				.and("exact_count", new BigDecimal(foodHistory.getFoodCountIgnoringFoodGroups(food)))
 				.eval();
 
-		return result.floatValue();
+			return result.floatValue();
+		}
 	}
 
 	public static float getFoodModifier(EntityPlayer player, ItemStack food)
