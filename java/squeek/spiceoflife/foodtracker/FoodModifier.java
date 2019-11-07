@@ -115,6 +115,7 @@ public class FoodModifier
 
 			return result.floatValue();
 		}
+		return 0.0f;
 	}
 
 	public static float getFoodModifier(EntityPlayer player, ItemStack food)
