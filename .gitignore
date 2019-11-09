@@ -45,3 +45,7 @@ LICENSE.txt
 *.rej
 
 
+out/
+gradlew
+gradle/wrapper/gradle-wrapper.properties
+LICENSE-fml.txt
