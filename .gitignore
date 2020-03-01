@@ -26,6 +26,7 @@ sources/
 *.ipr
 *.iws
 *.iml
+.idea
 
 # MCP Files
 docs/
@@ -49,3 +50,4 @@ out/
 gradlew
 gradle/wrapper/gradle-wrapper.properties
 LICENSE-fml.txt
+run/
