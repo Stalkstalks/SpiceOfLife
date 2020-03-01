@@ -72,8 +72,6 @@ public class ItemFoodContainer extends Item implements INBTInventoryHaver, IEdib
 
     public boolean isFull(ItemStack itemStack) {
         return getInventory(itemStack).isInventoryFull();
-    }    public boolean isEmpty(ItemStack itemStack) {
-        return NBTInventory.isInventoryEmpty(getInventoryTag(itemStack));
     }
 
     public FoodContainerInventory getInventory(ItemStack itemStack) {
@@ -86,15 +84,15 @@ public class ItemFoodContainer extends Item implements INBTInventoryHaver, IEdib
         if (event.entityItem.getEntityItem().getItem() instanceof ItemFoodContainer) {
             onDroppedByPlayer(event.entityItem.getEntityItem(), event.player);
         }
-    }    public boolean isOpen(ItemStack itemStack) {
-        return itemStack.hasTagCompound() && itemStack.getTagCompound().getBoolean(TAG_KEY_OPEN);
+    }
+
+    @Override
+    public String getInvName(NBTInventory inventory) {
+        return this.getItemStackDisplayName(null);
     }
 
     public UUID getUUID(ItemStack itemStack) {
         return UUID.fromString(getOrInitBaseTag(itemStack).getString(TAG_KEY_UUID));
-    }    public void setIsOpen(ItemStack itemStack, boolean isOpen) {
-        NBTTagCompound baseTag = getOrInitBaseTag(itemStack);
-        baseTag.setBoolean(TAG_KEY_OPEN, isOpen);
     }
 
     public NBTTagCompound getOrInitBaseTag(ItemStack itemStack) {
@@ -115,18 +113,6 @@ public class ItemFoodContainer extends Item implements INBTInventoryHaver, IEdib
     }
 
     @Override
-    public String getInvName(NBTInventory inventory) {
-        return this.getItemStackDisplayName(null);
-    }    public NBTTagCompound getInventoryTag(ItemStack itemStack) {
-        NBTTagCompound baseTag = getOrInitBaseTag(itemStack);
-
-        if (!baseTag.hasKey(TAG_KEY_INVENTORY))
-            baseTag.setTag(TAG_KEY_INVENTORY, new NBTTagCompound());
-
-        return baseTag.getCompoundTag(TAG_KEY_INVENTORY);
-    }
-
-    @Override
     public boolean isInvNameLocalized(NBTInventory inventory) {
         return false;
     }
@@ -134,40 +120,20 @@ public class ItemFoodContainer extends Item implements INBTInventoryHaver, IEdib
     @Override
     public int getInventoryStackLimit(NBTInventory inventory) {
         return ModConfig.FOOD_CONTAINERS_MAX_STACKSIZE;
-    }    public void tryDumpFoodInto(ItemStack itemStack, IInventory inventory, EntityPlayer player) {
-        FoodContainerInventory foodContainerInventory = getInventory(itemStack);
-        for (int slotNum = 0; slotNum < foodContainerInventory.getSizeInventory(); slotNum++) {
-            ItemStack stackInSlot = foodContainerInventory.getStackInSlot(slotNum);
-
-            if (stackInSlot == null)
-                continue;
-
-            stackInSlot = InventoryHelper.insertStackIntoInventory(stackInSlot, inventory);
-            foodContainerInventory.setInventorySlotContents(slotNum, stackInSlot);
-        }
     }
 
     @Override
     public void onInventoryChanged(NBTInventory inventory) {
-    }    public void tryPullFoodFrom(ItemStack itemStack, IInventory inventory, EntityPlayer player) {
-        List<InventoryFoodInfo> foodsToPull = MealPrioritizationHelper.findBestFoodsForPlayerAccountingForVariety(player, inventory);
-        if (foodsToPull.size() > 0) {
-            FoodContainerInventory foodContainerInventory = getInventory(itemStack);
-            for (InventoryFoodInfo foodToPull : foodsToPull) {
-                ItemStack stackInSlot = inventory.getStackInSlot(foodToPull.slotNum);
-
-                if (stackInSlot == null)
-                    continue;
-
-                stackInSlot = InventoryHelper.insertStackIntoInventoryOnce(stackInSlot, foodContainerInventory);
-                inventory.setInventorySlotContents(foodToPull.slotNum, stackInSlot);
-            }
-        }
     }
 
     @Override
     public boolean isItemValidForSlot(NBTInventory inventory, int slotNum, ItemStack itemStack) {
         return FoodHelper.isFood(itemStack) && FoodHelper.isDirectlyEdible(itemStack);
+    }
+
+    public void setIsOpen(ItemStack itemStack, boolean isOpen) {
+        NBTTagCompound baseTag = getOrInitBaseTag(itemStack);
+        baseTag.setBoolean(TAG_KEY_OPEN, isOpen);
     }
 
     /*
@@ -184,7 +150,67 @@ public class ItemFoodContainer extends Item implements INBTInventoryHaver, IEdib
             // this is used for the isFood check
             return new FoodValues(0, 0f);
         }
-    }    @Override
+    }
+
+    public ItemStack getBestFoodForPlayerToEat(ItemStack itemStack, EntityPlayer player) {
+        IInventory inventory = getInventory(itemStack);
+        int slotWithBestFood = MealPrioritizationHelper.findBestFoodForPlayerToEat(player, inventory);
+        return inventory.getStackInSlot(slotWithBestFood);
+    }
+
+    // necessary to stop food containers themselves being modified
+    // for example, HO's modFoodDivider was being applied to the values
+    // shown in the tooltips/overlay
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void getFoodValues(FoodEvent.GetFoodValues event) {
+        if (FoodHelper.isFoodContainer(event.food)) {
+            event.foodValues = event.unmodifiedFoodValues;
+        }
+    }
+
+    public void tryDumpFoodInto(ItemStack itemStack, IInventory inventory, EntityPlayer player) {
+        FoodContainerInventory foodContainerInventory = getInventory(itemStack);
+        for (int slotNum = 0; slotNum < foodContainerInventory.getSizeInventory(); slotNum++) {
+            ItemStack stackInSlot = foodContainerInventory.getStackInSlot(slotNum);
+
+            if (stackInSlot == null)
+                continue;
+
+            stackInSlot = InventoryHelper.insertStackIntoInventory(stackInSlot, inventory);
+            foodContainerInventory.setInventorySlotContents(slotNum, stackInSlot);
+        }
+    }
+
+    public void tryPullFoodFrom(ItemStack itemStack, IInventory inventory, EntityPlayer player) {
+        List<InventoryFoodInfo> foodsToPull = MealPrioritizationHelper.findBestFoodsForPlayerAccountingForVariety(player, inventory);
+        if (foodsToPull.size() > 0) {
+            FoodContainerInventory foodContainerInventory = getInventory(itemStack);
+            for (InventoryFoodInfo foodToPull : foodsToPull) {
+                ItemStack stackInSlot = inventory.getStackInSlot(foodToPull.slotNum);
+
+                if (stackInSlot == null)
+                    continue;
+
+                stackInSlot = InventoryHelper.insertStackIntoInventoryOnce(stackInSlot, foodContainerInventory);
+                inventory.setInventorySlotContents(foodToPull.slotNum, stackInSlot);
+            }
+        }
+    }
+
+    public boolean canPlayerEatFrom(EntityPlayer player, ItemStack stack) {
+        return canBeEatenFrom(stack) && player.canEat(false);
+    }
+
+    public boolean canBeEatenFrom(ItemStack stack) {
+        return isOpen(stack) && !isEmpty(stack);
+    }
+
+    public boolean isOpen(ItemStack itemStack) {
+        return itemStack.hasTagCompound() && itemStack.getTagCompound().getBoolean(TAG_KEY_OPEN);
+    }
+
+
+    @Override
     public boolean onDroppedByPlayer(ItemStack itemStack, EntityPlayer player) {
         if (!player.worldObj.isRemote && player.openContainer != null && player.openContainer instanceof ContainerFoodContainer) {
             ContainerFoodContainer openFoodContainer = (ContainerFoodContainer) player.openContainer;
@@ -206,24 +232,17 @@ public class ItemFoodContainer extends Item implements INBTInventoryHaver, IEdib
         return super.onDroppedByPlayer(itemStack, player);
     }
 
-    public ItemStack getBestFoodForPlayerToEat(ItemStack itemStack, EntityPlayer player) {
-        IInventory inventory = getInventory(itemStack);
-        int slotWithBestFood = MealPrioritizationHelper.findBestFoodForPlayerToEat(player, inventory);
-        return inventory.getStackInSlot(slotWithBestFood);
-    }    public boolean canBeEatenFrom(ItemStack stack) {
-        return isOpen(stack) && !isEmpty(stack);
+    public boolean isEmpty(ItemStack itemStack) {
+        return NBTInventory.isInventoryEmpty(getInventoryTag(itemStack));
     }
 
-    // necessary to stop food containers themselves being modified
-    // for example, HO's modFoodDivider was being applied to the values
-    // shown in the tooltips/overlay
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void getFoodValues(FoodEvent.GetFoodValues event) {
-        if (FoodHelper.isFoodContainer(event.food)) {
-            event.foodValues = event.unmodifiedFoodValues;
-        }
-    }    public boolean canPlayerEatFrom(EntityPlayer player, ItemStack stack) {
-        return canBeEatenFrom(stack) && player.canEat(false);
+    public NBTTagCompound getInventoryTag(ItemStack itemStack) {
+        NBTTagCompound baseTag = getOrInitBaseTag(itemStack);
+
+        if (!baseTag.hasKey(TAG_KEY_INVENTORY))
+            baseTag.setTag(TAG_KEY_INVENTORY, new NBTTagCompound());
+
+        return baseTag.getCompoundTag(TAG_KEY_INVENTORY);
     }
 
     @Override
@@ -342,7 +361,6 @@ public class ItemFoodContainer extends Item implements INBTInventoryHaver, IEdib
     }
 
 
-
     @SideOnly(Side.CLIENT)
     @Override
     public void registerIcons(IIconRegister iconRegister) {
@@ -350,21 +368,6 @@ public class ItemFoodContainer extends Item implements INBTInventoryHaver, IEdib
         iconOpenEmpty = iconRegister.registerIcon(getIconString() + "_open_empty");
         iconOpenFull = iconRegister.registerIcon(getIconString() + "_open_full");
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

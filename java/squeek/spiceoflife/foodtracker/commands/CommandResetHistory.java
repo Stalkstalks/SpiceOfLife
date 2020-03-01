@@ -22,9 +22,6 @@ public class CommandResetHistory extends CommandBase {
             return getListOfStringsMatchingLastWord(curArgs, MinecraftServer.getServer().getAllUsernames());
         else
             return null;
-    }    @Override
-    public String getCommandName() {
-        return "spiceoflife";
     }
 
     @Override
@@ -33,15 +30,24 @@ public class CommandResetHistory extends CommandBase {
             return super.compareTo((ICommand) obj);
         else
             return 0;
-    }    @Override
-    public String getCommandUsage(ICommandSender commandSender) {
-        return "/spiceoflife reset [player]";
     }
 
     @Override
     public int hashCode() {
         return getCommandName().hashCode();
-    }    @Override
+    }
+
+    @Override
+    public String getCommandName() {
+        return "spiceoflife";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender commandSender) {
+        return "/spiceoflife reset [player]";
+    }
+
+    @Override
     public void processCommand(ICommandSender commandSender, String[] args) {
         if (args.length > 0) {
             if (args[0].equals("reset")) {
@@ -62,10 +68,6 @@ public class CommandResetHistory extends CommandBase {
     public boolean equals(Object obj) {
         return super.equals(obj) || obj instanceof ICommand && compareTo(obj) == 0;
     }
-
-
-
-
 
 
 }
