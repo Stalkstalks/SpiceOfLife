@@ -16,63 +16,66 @@ buildscript {
 }
 
 apply plugin: 'forge'
+apply plugin: 'idea'
 
 minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
 }
 
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
 group = project.projectDir.name.toLowerCase()
 archivesBaseName = project.projectDir.name + "-mc" + project.minecraft.version
 
-sourceSets.main{
+sourceSets.main {
     java {
-		srcDirs 'java', 'apis', 'EvalEx/src' //set the source folder as the /src subfolder
-	}
+        srcDirs 'java', 'apis', 'EvalEx/src' //set the source folder as the /src subfolder
+    }
     resources {
-		srcDirs 'resources' //set the resources folder as the /resources subfolder
-	}
+        srcDirs 'resources' //set the resources folder as the /resources subfolder
+    }
 }
 sourceSets.test {
-	java {
-		srcDirs 'tests'
-	}
+    java {
+        srcDirs 'tests'
+    }
 }
 
 repositories {
-	maven {
-		url "http://www.ryanliptak.com/maven/"
-	}
+    maven {
+        url "http://www.ryanliptak.com/maven/"
+    }
 }
 
 dependencies {
-	compile fileTree(dir: 'libs', include: '*.jar,*.zip')
+    compile fileTree(dir: 'libs', include: '*.jar,*.zip')
     compile "applecore:AppleCore:1.7.10-1.3.2:deobf"
     compile 'com.udojava:EvalEx:2.1'
-	testCompile "junit:junit:4.11"
+    testCompile "junit:junit:4.11"
 }
 
 // variable replacement in source files
-task processSourcesCustom(type:Copy){
-	from('java')
-	{
-		include '**/ModInfo.java'
+task processSourcesCustom(type: Copy) {
+    from('java')
+            {
+                include '**/ModInfo.java'
 
-		expand 'version':project.version, 'mcversion':project.minecraft.version
-	}
-	into project.buildDir.getPath()+"/sources/java"
+                expand 'version': project.version, 'mcversion': project.minecraft.version
+            }
+    into project.buildDir.getPath() + "/sources/java"
 }
 
-task copyEvalExLicense(type:Copy){
-	from('EvalEx')
-	{
-		include 'LICENSE'
-	}
-	into sourceSets.main.output.resourcesDir.getPath()+"/com/udojava/evalex"
+task copyEvalExLicense(type: Copy) {
+    from('EvalEx')
+            {
+                include 'LICENSE'
+            }
+    into sourceSets.main.output.resourcesDir.getPath() + "/com/udojava/evalex"
 }
 
 // delete mcmod.info so that it gets a fresh version copied in every time
 task cleanModInfo(type: Delete) {
-	delete file(sourceSets.main.output.resourcesDir.getPath()+"/mcmod.info")
+    delete file(sourceSets.main.output.resourcesDir.getPath() + "/mcmod.info")
 }
 
 // correct task ordering
@@ -80,23 +83,31 @@ processResources.dependsOn copyEvalExLicense
 processResources.dependsOn cleanModInfo
 compileJava.dependsOn processSourcesCustom
 afterEvaluate { project ->
-	processSourcesCustom.shouldRunAfter(sourceMainJava)
+    processSourcesCustom.shouldRunAfter(sourceMainJava)
 }
 
 processResources
-{
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        include 'example/**.json'
-                
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-        
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-        exclude 'example/**.json'
+        {
+            // replace stuff in mcmod.info, nothing else
+            from(sourceSets.main.resources.srcDirs) {
+                include 'mcmod.info'
+                include 'example/**.json'
+
+                // replace version and mcversion
+                expand 'version': project.version, 'mcversion': project.minecraft.version
+            }
+
+            // copy everything else, thats not the mcmod.info
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+                exclude 'example/**.json'
+            }
+        }
+
+sourceSets {
+    main {
+        output.resourcesDir = output.classesDir
     }
 }
+
+idea { module { inheritOutputDirs = true } }

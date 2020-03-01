@@ -1,5 +1,12 @@
 package squeek.spiceoflife.foodtracker;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -14,162 +21,139 @@ import squeek.spiceoflife.foodtracker.foodqueue.FixedTimeQueue;
 import squeek.spiceoflife.items.ItemFoodJournal;
 import squeek.spiceoflife.network.PacketFoodEatenAllTime;
 import squeek.spiceoflife.network.PacketFoodHistory;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
-import cpw.mods.fml.relauncher.Side;
 
-public class FoodTracker
-{
-	/**
-	 * Save food eaten to the history
-	 */
-	@SubscribeEvent
-	public void onFoodEaten(FoodEvent.FoodEaten event)
-	{
-		if (event.player.worldObj.isRemote)
-			return;
+public class FoodTracker {
+    public static int getFoodHistoryLengthInRelevantUnits(EntityPlayer player) {
+        return FoodHistory.get(player).getHistoryLengthInRelevantUnits();
+    }
 
-		FoodEaten foodEaten = new FoodEaten(event.food, event.player);
-		foodEaten.foodValues = event.foodValues;
+    public static ItemStack getFoodLastEatenBy(EntityPlayer player) {
+        return FoodHistory.get(player).getLastEatenFood().itemStack;
+    }
 
-		FoodTracker.addFoodEatenByPlayer(foodEaten, event.player);
-	}
+    /**
+     * Save food eaten to the history
+     */
+    @SubscribeEvent
+    public void onFoodEaten(FoodEvent.FoodEaten event) {
+        if (event.player.worldObj.isRemote)
+            return;
 
-	/**
-	 * Add relevant extended entity data whenever an entity comes into existence
-	 */
-	@SubscribeEvent
-	public void onEntityConstructing(EntityConstructing event)
-	{
-		if (event.entity instanceof EntityPlayer)
-		{
-			FoodHistory.get((EntityPlayer) event.entity);
-		}
-	}
+        FoodEaten foodEaten = new FoodEaten(event.food, event.player);
+        foodEaten.foodValues = event.foodValues;
 
-	/**
-	 * Keep track of how many ticks the player has actively spent on the server,
-	 * and make sure the food history prunes expired items
-	 */
-	@SubscribeEvent
-	public void onLivingUpdate(LivingEvent.LivingUpdateEvent event)
-	{
-		if (!(event.entityLiving instanceof EntityPlayer))
-			return;
+        FoodTracker.addFoodEatenByPlayer(foodEaten, event.player);
+    }
 
-		FoodHistory foodHistory = FoodHistory.get((EntityPlayer) event.entityLiving);
-		foodHistory.deltaTicksActive(1);
+    public static boolean addFoodEatenByPlayer(FoodEaten foodEaten, EntityPlayer player) {
+        // client needs to be told by the server otherwise the client can get out of sync easily
+        if (!player.worldObj.isRemote && player instanceof EntityPlayerMP)
+            PacketDispatcher.get().sendTo(new PacketFoodHistory(foodEaten), (EntityPlayerMP) player);
 
-		if (ModConfig.USE_TIME_QUEUE && !ModConfig.USE_HUNGER_QUEUE)
-		{
-			FixedTimeQueue timeQueue = (FixedTimeQueue) foodHistory.getHistory();
-			timeQueue.prune(event.entityLiving.worldObj.getTotalWorldTime(), foodHistory.ticksActive);
-		}
-	}
+        return FoodHistory.get(player).addFood(foodEaten);
+    }
 
-	/**
-	 * Sync savedata/config whenever a player joins the server
-	 */
-	@SubscribeEvent
-	public void onPlayerLogin(PlayerLoggedInEvent event)
-	{
-		// server needs to send config settings to the client
-		ModConfig.sync((EntityPlayerMP) event.player);
+    /**
+     * Add relevant extended entity data whenever an entity comes into existence
+     */
+    @SubscribeEvent
+    public void onEntityConstructing(EntityConstructing event) {
+        if (event.entity instanceof EntityPlayer) {
+            FoodHistory.get((EntityPlayer) event.entity);
+        }
+    }
 
-		// server needs to send food groups to the client
-		FoodGroupRegistry.sync((EntityPlayerMP) event.player);
+    /**
+     * Keep track of how many ticks the player has actively spent on the server,
+     * and make sure the food history prunes expired items
+     */
+    @SubscribeEvent
+    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+        if (!(event.entityLiving instanceof EntityPlayer))
+            return;
 
-		// server needs to send any loaded data to the client
-		FoodHistory foodHistory = FoodHistory.get(event.player);
-		foodHistory.validate();
-		syncFoodHistory(foodHistory);
+        FoodHistory foodHistory = FoodHistory.get((EntityPlayer) event.entityLiving);
+        foodHistory.deltaTicksActive(1);
 
-		// give food journal
-		if (!foodHistory.wasGivenFoodJournal && (ModConfig.GIVE_FOOD_JOURNAL_ON_START || (ModConfig.GIVE_FOOD_JOURNAL_ON_DIMINISHING_RETURNS && ModConfig.FOOD_EATEN_THRESHOLD == 0)))
-		{
-			ItemFoodJournal.giveToPlayer(event.player);
-			foodHistory.wasGivenFoodJournal = true;
-		}
-	}
+        if (ModConfig.USE_TIME_QUEUE && !ModConfig.USE_HUNGER_QUEUE) {
+            FixedTimeQueue timeQueue = (FixedTimeQueue) foodHistory.getHistory();
+            timeQueue.prune(event.entityLiving.worldObj.getTotalWorldTime(), foodHistory.ticksActive);
+        }
+    }
 
-	/**
-	 * Resync food history whenever a player changes dimensions
-	 */
-	@SubscribeEvent
-	public void onPlayerChangedDimension(PlayerChangedDimensionEvent event)
-	{
-		FoodHistory foodHistory = FoodHistory.get(event.player);
-		syncFoodHistory(foodHistory);
-	}
+    /**
+     * Sync savedata/config whenever a player joins the server
+     */
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerLoggedInEvent event) {
+        // server needs to send config settings to the client
+        ModConfig.sync((EntityPlayerMP) event.player);
 
-	/**
-	 * Save death-persistent data to avoid any rollbacks on respawn
-	 */
-	@SubscribeEvent
-	public void onLivingDeathEvent(LivingDeathEvent event)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient() || !(event.entity instanceof EntityPlayer))
-			return;
+        // server needs to send food groups to the client
+        FoodGroupRegistry.sync((EntityPlayerMP) event.player);
 
-		EntityPlayer player = (EntityPlayer) event.entity;
+        // server needs to send any loaded data to the client
+        FoodHistory foodHistory = FoodHistory.get(event.player);
+        foodHistory.validate();
+        syncFoodHistory(foodHistory);
 
-		FoodHistory foodHistory = FoodHistory.get(player);
-		foodHistory.saveNBTData(null);
-	}
+        // give food journal
+        if (!foodHistory.wasGivenFoodJournal && (ModConfig.GIVE_FOOD_JOURNAL_ON_START || (ModConfig.GIVE_FOOD_JOURNAL_ON_DIMINISHING_RETURNS && ModConfig.FOOD_EATEN_THRESHOLD == 0))) {
+            ItemFoodJournal.giveToPlayer(event.player);
+            foodHistory.wasGivenFoodJournal = true;
+        }
+    }
 
-	/**
-	 * Load any death-persistent savedata on respawn and sync it
-	 */
-	@SubscribeEvent
-	public void onPlayerRespawn(PlayerRespawnEvent event)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-			return;
+    public static void syncFoodHistory(FoodHistory foodHistory) {
+        PacketDispatcher.get().sendTo(new PacketFoodEatenAllTime(foodHistory.totalFoodsEatenAllTime), (EntityPlayerMP) foodHistory.player);
+        PacketDispatcher.get().sendTo(new PacketFoodHistory(foodHistory, true), (EntityPlayerMP) foodHistory.player);
+    }
 
-		// load any persistent food history data
-		FoodHistory foodHistory = FoodHistory.get(event.player);
-		foodHistory.loadNBTData(null);
+    /**
+     * Resync food history whenever a player changes dimensions
+     */
+    @SubscribeEvent
+    public void onPlayerChangedDimension(PlayerChangedDimensionEvent event) {
+        FoodHistory foodHistory = FoodHistory.get(event.player);
+        syncFoodHistory(foodHistory);
+    }
 
-		// server needs to send any loaded data to the client
-		syncFoodHistory(foodHistory);
-	}
+    /**
+     * Save death-persistent data to avoid any rollbacks on respawn
+     */
+    @SubscribeEvent
+    public void onLivingDeathEvent(LivingDeathEvent event) {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || !(event.entity instanceof EntityPlayer))
+            return;
 
-	/**
-	 * Assume the server doesn't have the mod
-	 */
-	@SubscribeEvent
-	public void onClientConnectedToServer(ClientConnectedToServerEvent event)
-	{
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-			ModConfig.assumeClientOnly();
-	}
+        EntityPlayer player = (EntityPlayer) event.entity;
 
-	public static void syncFoodHistory(FoodHistory foodHistory)
-	{
-		PacketDispatcher.get().sendTo(new PacketFoodEatenAllTime(foodHistory.totalFoodsEatenAllTime), (EntityPlayerMP) foodHistory.player);
-		PacketDispatcher.get().sendTo(new PacketFoodHistory(foodHistory, true), (EntityPlayerMP) foodHistory.player);
-	}
+        FoodHistory foodHistory = FoodHistory.get(player);
+        foodHistory.saveNBTData(null);
+    }
 
-	public static boolean addFoodEatenByPlayer(FoodEaten foodEaten, EntityPlayer player)
-	{
-		// client needs to be told by the server otherwise the client can get out of sync easily
-		if (!player.worldObj.isRemote && player instanceof EntityPlayerMP)
-			PacketDispatcher.get().sendTo(new PacketFoodHistory(foodEaten), (EntityPlayerMP) player);
+    /**
+     * Load any death-persistent savedata on respawn and sync it
+     */
+    @SubscribeEvent
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
 
-		return FoodHistory.get(player).addFood(foodEaten);
-	}
+        // load any persistent food history data
+        FoodHistory foodHistory = FoodHistory.get(event.player);
+        foodHistory.loadNBTData(null);
 
-	public static int getFoodHistoryLengthInRelevantUnits(EntityPlayer player)
-	{
-		return FoodHistory.get(player).getHistoryLengthInRelevantUnits();
-	}
+        // server needs to send any loaded data to the client
+        syncFoodHistory(foodHistory);
+    }
 
-	public static ItemStack getFoodLastEatenBy(EntityPlayer player)
-	{
-		return FoodHistory.get(player).getLastEatenFood().itemStack;
-	}
+    /**
+     * Assume the server doesn't have the mod
+     */
+    @SubscribeEvent
+    public void onClientConnectedToServer(ClientConnectedToServerEvent event) {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+            ModConfig.assumeClientOnly();
+    }
 }
