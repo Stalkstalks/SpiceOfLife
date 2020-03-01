@@ -2,42 +2,35 @@ package squeek.spiceoflife.foodtracker.foodqueue;
 
 import squeek.spiceoflife.foodtracker.FoodEaten;
 
-public class FixedSizeQueue extends FoodQueue
-{
-	private static final long serialVersionUID = 2666900280639735575L;
-	protected int limit;
+public class FixedSizeQueue extends FoodQueue {
+    private static final long serialVersionUID = 2666900280639735575L;
+    protected int limit;
 
-	public FixedSizeQueue(int limit)
-	{
-		setMaxSize(limit);
-	}
+    public FixedSizeQueue(int limit) {
+        setMaxSize(limit);
+    }
 
-	@Override
-	public boolean add(FoodEaten o)
-	{
-		boolean added = super.add(o);
-		if (added)
-			trimToMaxSize();
-		return added;
-	}
+    protected void trimToMaxSize() {
+        while (size() > limit) {
+            super.remove();
+        }
+    }
 
-	public int getMaxSize()
-	{
-		return limit;
-	}
+    @Override
+    public boolean add(FoodEaten o) {
+        boolean added = super.add(o);
+        if (added)
+            trimToMaxSize();
+        return added;
+    }
 
-	public void setMaxSize(int limit)
-	{
-		this.limit = limit;
-		trimToMaxSize();
-	}
+    public int getMaxSize() {
+        return limit;
+    }
 
-	protected void trimToMaxSize()
-	{
-		while (size() > limit)
-		{
-			super.remove();
-		}
-	}
+    public void setMaxSize(int limit) {
+        this.limit = limit;
+        trimToMaxSize();
+    }
 
 }
