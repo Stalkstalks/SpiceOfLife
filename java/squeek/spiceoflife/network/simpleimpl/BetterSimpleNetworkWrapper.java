@@ -59,7 +59,7 @@ public class BetterSimpleNetworkWrapper {
     }
 
     private <REPLY extends IMessage, REQ extends IMessage> BetterSimpleChannelHandlerWrapper<REQ, REPLY> getHandlerWrapper(Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Side side, Class<? extends REQ> messageType) {
-        return new BetterSimpleChannelHandlerWrapper<REQ, REPLY>(messageHandler, side, messageType);
+        return new BetterSimpleChannelHandlerWrapper<>(messageHandler, side, messageType);
     }
 
     /**

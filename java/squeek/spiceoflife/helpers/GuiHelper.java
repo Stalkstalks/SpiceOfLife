@@ -38,10 +38,10 @@ public class GuiHelper implements IGuiHandler {
         tessellator.startDrawingQuads();
         double uOffset = (icon.getMaxU() - icon.getMinU()) * width / 16f;
         double vOffset = (icon.getMaxV() - icon.getMinV()) * height / 16f;
-        tessellator.addVertexWithUV(x + 0, y + height, zLevel, icon.getMinU(), icon.getMinV() + vOffset);
+        tessellator.addVertexWithUV(x, y + height, zLevel, icon.getMinU(), icon.getMinV() + vOffset);
         tessellator.addVertexWithUV(x + width, y + height, zLevel, icon.getMinU() + uOffset, icon.getMinV() + vOffset);
-        tessellator.addVertexWithUV(x + width, y + 0, zLevel, icon.getMinU() + uOffset, icon.getMinV());
-        tessellator.addVertexWithUV(x + 0, y + 0, zLevel, icon.getMinU(), icon.getMinV());
+        tessellator.addVertexWithUV(x + width, y, zLevel, icon.getMinU() + uOffset, icon.getMinV());
+        tessellator.addVertexWithUV(x, y, zLevel, icon.getMinU(), icon.getMinV());
         tessellator.draw();
     }
 
@@ -56,16 +56,12 @@ public class GuiHelper implements IGuiHandler {
     }
 
     public Object getSidedGuiElement(boolean isClientSide, int guiId, EntityPlayer player, World world, int x, int y, int z) {
-        switch (GuiIds.values()[guiId]) {
-            case FOOD_CONTAINER:
-                ItemStack heldItem = player.getHeldItem();
-                if (heldItem != null && heldItem.getItem() instanceof ItemFoodContainer) {
-                    FoodContainerInventory foodContainerInventory = ((ItemFoodContainer) heldItem.getItem()).getInventory(heldItem);
-                    return isClientSide ? new GuiFoodContainer(player.inventory, foodContainerInventory) : new ContainerFoodContainer(player.inventory, foodContainerInventory);
-                }
-                break;
-            default:
-                break;
+        if (GuiIds.values()[guiId] == GuiIds.FOOD_CONTAINER) {
+            ItemStack heldItem = player.getHeldItem();
+            if (heldItem != null && heldItem.getItem() instanceof ItemFoodContainer) {
+                FoodContainerInventory foodContainerInventory = ((ItemFoodContainer) heldItem.getItem()).getInventory(heldItem);
+                return isClientSide ? new GuiFoodContainer(player.inventory, foodContainerInventory) : new ContainerFoodContainer(player.inventory, foodContainerInventory);
+            }
         }
         return null;
     }

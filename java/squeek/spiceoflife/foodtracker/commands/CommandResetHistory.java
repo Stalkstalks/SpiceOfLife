@@ -9,7 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import squeek.spiceoflife.foodtracker.FoodHistory;
 import squeek.spiceoflife.foodtracker.FoodTracker;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CommandResetHistory extends CommandBase {
@@ -17,7 +17,7 @@ public class CommandResetHistory extends CommandBase {
     @Override
     public List addTabCompletionOptions(ICommandSender commandSender, String[] curArgs) {
         if (curArgs.length == 1)
-            return Arrays.asList("reset");
+            return Collections.singletonList("reset");
         else if (curArgs.length == 2)
             return getListOfStringsMatchingLastWord(curArgs, MinecraftServer.getServer().getAllUsernames());
         else

@@ -8,7 +8,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import java.util.HashMap;
 
 public class MovementHelper {
-    public static HashMap<EntityPlayer, MovementInfo> movementInfoByPlayer = new HashMap<EntityPlayer, MovementInfo>();
+    public static HashMap<EntityPlayer, MovementInfo> movementInfoByPlayer = new HashMap<>();
 
     public static void init() {
         MinecraftForge.EVENT_BUS.register(new MovementHelper());

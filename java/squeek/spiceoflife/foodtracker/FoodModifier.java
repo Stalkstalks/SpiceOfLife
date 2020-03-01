@@ -47,9 +47,8 @@ public class FoodModifier {
 
             if (actualFood != null) {
                 float modifier = FoodModifier.getFoodModifier(event.player, actualFood);
-                FoodValues modifiedFoodValues = FoodModifier.getModifiedFoodValues(event.foodValues, modifier);
 
-                event.foodValues = modifiedFoodValues;
+                event.foodValues = FoodModifier.getModifiedFoodValues(event.foodValues, modifier);
             }
         }
     }

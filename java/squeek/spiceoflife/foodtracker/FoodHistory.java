@@ -142,7 +142,7 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
     }
 
     public Set<FoodGroup> getDistinctFoodGroups() {
-        Set<FoodGroup> distinctFoodGroups = new HashSet<FoodGroup>();
+        Set<FoodGroup> distinctFoodGroups = new HashSet<>();
         for (FoodEaten foodEaten : history) {
             if (foodEaten.itemStack == null)
                 continue;
@@ -160,7 +160,7 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
     }
 
     public void validate() {
-        List<FoodEaten> invalidFoods = new ArrayList<FoodEaten>();
+        List<FoodEaten> invalidFoods = new ArrayList<>();
         for (FoodEaten foodEaten : history) {
             if (!FoodHelper.isValidFood(foodEaten.itemStack)) {
                 invalidFoods.add(foodEaten);

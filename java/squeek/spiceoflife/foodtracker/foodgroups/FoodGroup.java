@@ -31,10 +31,10 @@ public class FoodGroup implements IPackable {
     public Map<String, List<String>> foodStringsByType;
     @SerializedName("exclude")
     public Map<String, List<String>> excludedFoodStringsByType;
-    transient private List<FoodGroupMember> included = new ArrayList<FoodGroupMember>();
-    transient private List<FoodGroupMember> excluded = new ArrayList<FoodGroupMember>();
-    transient private Set<Integer> matchingItemHashes = new HashSet<Integer>();
-    transient private Set<Integer> excludedItemHashes = new HashSet<Integer>();
+    transient private List<FoodGroupMember> included = new ArrayList<>();
+    transient private List<FoodGroupMember> excluded = new ArrayList<>();
+    transient private Set<Integer> matchingItemHashes = new HashSet<>();
+    transient private Set<Integer> excludedItemHashes = new HashSet<>();
     transient private FoodModifier foodModifier;
     private boolean hidden = false;
 

@@ -25,7 +25,6 @@ import squeek.spiceoflife.helpers.StringHelper;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class GuiScreenFoodJournal extends GuiContainer {
     protected static final int numPerPage = 5;
     private static final ResourceLocation bookGuiTextures = new ResourceLocation("textures/gui/book.png");
     public ItemStack hoveredStack = null;
-    protected List<WidgetFoodEaten> foodEatenWidgets = new ArrayList<WidgetFoodEaten>();
+    protected List<WidgetFoodEaten> foodEatenWidgets = new ArrayList<>();
     protected int pageNum = 0;
     protected int numPages;
     protected GuiButton buttonNextPage;
@@ -135,7 +134,7 @@ public class GuiScreenFoodJournal extends GuiContainer {
                         if (hoveredStack != null)
                             this.renderToolTip(hoveredStack, mouseX, mouseY);
                     } else if (isMouseInsideBox(mouseX, mouseY, localX + WidgetFoodEaten.PADDING_LEFT, localY, foodEatenWidget.width(), 16)) {
-                        List<String> toolTipStrings = new ArrayList<String>();
+                        List<String> toolTipStrings = new ArrayList<>();
                         int foodIndex = sortedDescending ? Math.max(1, totalNum - foodEatenIndex) : foodEatenIndex + 1;
                         toolTipStrings.add(StatCollector.translateToLocalFormatted("spiceoflife.gui.food.num", foodIndex));
                         toolTipStrings.add(EnumChatFormatting.GRAY + getTimeEatenString(foodEatenWidget.foodEaten));
@@ -155,7 +154,7 @@ public class GuiScreenFoodJournal extends GuiContainer {
         }
 
         if (isMouseInsideBox(mouseX, mouseY, allTimeX, allTimeY, allTimeW, fontRendererObj.FONT_HEIGHT)) {
-            this.drawHoveringText(Arrays.asList(StatCollector.translateToLocal("spiceoflife.gui.alltime.food.eaten")), mouseX, mouseY, fontRendererObj);
+            this.drawHoveringText(Collections.singletonList(StatCollector.translateToLocal("spiceoflife.gui.alltime.food.eaten")), mouseX, mouseY, fontRendererObj);
         }
 
         GL11.glDisable(GL11.GL_LIGHTING);

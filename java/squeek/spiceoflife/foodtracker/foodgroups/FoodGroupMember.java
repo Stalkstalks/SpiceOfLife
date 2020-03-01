@@ -5,7 +5,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import squeek.spiceoflife.compat.IByteIO;
 import squeek.spiceoflife.interfaces.IPackable;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FoodGroupMember implements IPackable {
@@ -27,7 +27,7 @@ public class FoodGroupMember implements IPackable {
     }
 
     public List<ItemStack> getBaseItemList() {
-        return itemStack != null ? Arrays.asList(itemStack) : OreDictionary.getOres(oredictName);
+        return itemStack != null ? Collections.singletonList(itemStack) : OreDictionary.getOres(oredictName);
     }
 
     /*

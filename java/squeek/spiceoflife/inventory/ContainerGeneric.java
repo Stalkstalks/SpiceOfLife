@@ -90,8 +90,7 @@ public abstract class ContainerGeneric extends Container {
         Slot slot = (Slot) this.inventorySlots.get(slotNum);
 
         if (slot != null && slot.getHasStack()) {
-            ItemStack stackInSlot = slot.getStack();
-            ItemStack stackToTransfer = stackInSlot;
+            final ItemStack stackToTransfer = slot.getStack();
 
             // transferring from the container to the player inventory
             if (slotNum < this.inventory.getSizeInventory()) {

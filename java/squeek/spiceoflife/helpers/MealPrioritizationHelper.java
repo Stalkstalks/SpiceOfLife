@@ -13,18 +13,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MealPrioritizationHelper {
-    public static final Comparator<InventoryFoodInfo> hungerComparator = new Comparator<InventoryFoodInfo>() {
-        @Override
-        public int compare(InventoryFoodInfo a, InventoryFoodInfo b) {
-            return integerCompare(a.modifiedFoodValues.hunger, b.modifiedFoodValues.hunger);
-        }
-    };
-    public static final Comparator<InventoryFoodInfo> diminishedComparator = new Comparator<InventoryFoodInfo>() {
-        @Override
-        public int compare(InventoryFoodInfo a, InventoryFoodInfo b) {
-            return Float.compare(b.diminishingReturnsModifier, a.diminishingReturnsModifier);
-        }
-    };
+    public static final Comparator<InventoryFoodInfo> hungerComparator = (a, b) -> integerCompare(a.modifiedFoodValues.hunger, b.modifiedFoodValues.hunger);
+    public static final Comparator<InventoryFoodInfo> diminishedComparator = (a, b) -> Float.compare(b.diminishingReturnsModifier, a.diminishingReturnsModifier);
 
     public static int findBestFoodForPlayerToEat(EntityPlayer player, IInventory inventory) {
         List<InventoryFoodInfo> allFoodInfo = getFoodInfoFromInventoryForPlayer(player, inventory);
@@ -32,7 +22,7 @@ public class MealPrioritizationHelper {
 
         if (allFoodInfo.size() > 0) {
             int hungerMissingFromPlayer = 20 - player.getFoodStats().getFoodLevel();
-            Collections.sort(allFoodInfo, new FoodInfoComparator(hungerMissingFromPlayer));
+            allFoodInfo.sort(new FoodInfoComparator(hungerMissingFromPlayer));
             bestFoodInfo = allFoodInfo.get(0);
         }
 
@@ -40,7 +30,7 @@ public class MealPrioritizationHelper {
     }
 
     public static List<InventoryFoodInfo> getFoodInfoFromInventoryForPlayer(EntityPlayer player, IInventory inventory) {
-        List<InventoryFoodInfo> foodInfo = new ArrayList<InventoryFoodInfo>();
+        List<InventoryFoodInfo> foodInfo = new ArrayList<>();
 
         for (int slotNum = 0; slotNum < inventory.getSizeInventory(); slotNum++) {
             ItemStack stackInSlot = inventory.getStackInSlot(slotNum);
@@ -63,20 +53,20 @@ public class MealPrioritizationHelper {
     public static List<InventoryFoodInfo> findBestFoodsForPlayerAccountingForVariety(EntityPlayer player, IInventory inventory) {
         List<InventoryFoodInfo> allFoodInfo = getFoodInfoFromInventoryForPlayer(player, inventory);
         Collections.shuffle(allFoodInfo);
-        Collections.sort(allFoodInfo, diminishedComparator);
+        allFoodInfo.sort(diminishedComparator);
         return allFoodInfo;
     }
 
     public static List<List<InventoryFoodInfo>> stratifyFoodsByHunger(List<InventoryFoodInfo> allFoods) {
-        List<List<InventoryFoodInfo>> stratifiedFoods = new ArrayList<List<InventoryFoodInfo>>();
+        List<List<InventoryFoodInfo>> stratifiedFoods = new ArrayList<>();
         if (allFoods.size() > 0) {
-            Collections.sort(allFoods, hungerComparator);
+            allFoods.sort(hungerComparator);
             int strataHunger = allFoods.get(0).modifiedFoodValues.hunger;
-            List<InventoryFoodInfo> currentStrata = new ArrayList<InventoryFoodInfo>();
+            List<InventoryFoodInfo> currentStrata = new ArrayList<>();
             for (InventoryFoodInfo foodInfo : allFoods) {
                 if (foodInfo.modifiedFoodValues.hunger != strataHunger) {
                     stratifiedFoods.add(currentStrata);
-                    currentStrata = new ArrayList<InventoryFoodInfo>();
+                    currentStrata = new ArrayList<>();
                     strataHunger = foodInfo.modifiedFoodValues.hunger;
                 }
                 currentStrata.add(foodInfo);
@@ -87,7 +77,7 @@ public class MealPrioritizationHelper {
     }
 
     private static int integerCompare(int a, int b) {
-        return (a < b) ? -1 : ((a == b) ? 0 : 1);
+        return Integer.compare(a, b);
     }
 
     public static class InventoryFoodInfo {

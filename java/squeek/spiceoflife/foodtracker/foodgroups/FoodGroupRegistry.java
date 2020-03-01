@@ -14,12 +14,12 @@ import java.util.Map;
 import java.util.Set;
 
 public class FoodGroupRegistry {
-    private static Map<String, FoodGroup> foodGroups = new HashMap<String, FoodGroup>();
+    private static Map<String, FoodGroup> foodGroups = new HashMap<>();
     /**
      * Does not deal with food group exclusions; that must be handled separately
      * See {@link #getFoodGroupsForFood(ItemStack)}
      */
-    private static Map<Integer, Set<FoodGroup>> foodToIncludedFoodGroups = new HashMap<Integer, Set<FoodGroup>>();
+    private static Map<Integer, Set<FoodGroup>> foodToIncludedFoodGroups = new HashMap<>();
     private static boolean hasBlacklist = false;
 
     public static FoodGroup getFoodGroup(String identifier) {
@@ -58,7 +58,7 @@ public class FoodGroupRegistry {
     public static Set<FoodGroup> getFoodGroupsForFood(ItemStack food) {
         Set<FoodGroup> wildCardFoodGroups = foodToIncludedFoodGroups.get(OreDictionaryHelper.getWildCardItemStackHash(food));
         Set<FoodGroup> exactFoodGroups = foodToIncludedFoodGroups.get(OreDictionaryHelper.getItemStackHash(food));
-        Set<FoodGroup> allFoodGroups = new HashSet<FoodGroup>();
+        Set<FoodGroup> allFoodGroups = new HashSet<>();
 
         if (wildCardFoodGroups != null) {
             for (FoodGroup foodGroup : wildCardFoodGroups) {
@@ -96,9 +96,7 @@ public class FoodGroupRegistry {
         for (FoodGroup foodGroup : getFoodGroups()) {
             foodGroup.init();
             for (Integer itemHash : foodGroup.getMatchingItemStackHashes()) {
-                if (foodToIncludedFoodGroups.get(itemHash) == null) {
-                    foodToIncludedFoodGroups.put(itemHash, new HashSet<FoodGroup>());
-                }
+                foodToIncludedFoodGroups.computeIfAbsent(itemHash, k -> new HashSet<>());
                 foodToIncludedFoodGroups.get(itemHash).add(foodGroup);
             }
         }

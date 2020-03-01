@@ -78,7 +78,7 @@ public class InventoryHelper {
     }
 
     public static List<Integer> getNonEmptySlotsInInventory(IInventory inventory) {
-        List<Integer> nonEmptySlotIndexes = new ArrayList<Integer>();
+        List<Integer> nonEmptySlotIndexes = new ArrayList<>();
         for (int slotNum = 0; slotNum < inventory.getSizeInventory(); slotNum++) {
             if (inventory.getStackInSlot(slotNum) != null)
                 nonEmptySlotIndexes.add(slotNum);

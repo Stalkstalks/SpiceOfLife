@@ -48,7 +48,7 @@ public class BetterSimpleChannelHandlerWrapper<REQ extends IMessage, REPLY exten
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, REQ msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, REQ msg) {
         INetHandler iNetHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
         MessageContext context = getMessageContext(iNetHandler, side);
         REPLY result = messageHandler.onMessage(msg, context);

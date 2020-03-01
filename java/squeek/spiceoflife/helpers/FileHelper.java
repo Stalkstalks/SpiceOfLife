@@ -12,14 +12,8 @@ public class FileHelper {
     }
 
     public static void copyFile(File sourceFile, File destFile, final boolean overwrite) throws IOException {
-        InputStream sourceInput = null;
-        try {
-            sourceInput = new FileInputStream(sourceFile);
+        try (InputStream sourceInput = new FileInputStream(sourceFile)) {
             copyFile(sourceInput, destFile, overwrite);
-        } finally {
-            if (sourceInput != null) {
-                sourceInput.close();
-            }
         }
 
     }
@@ -34,17 +28,11 @@ public class FileHelper {
             assert destFile.createNewFile();
         }
 
-        FileOutputStream destOutput = null;
-        try {
-            destOutput = new FileOutputStream(destFile);
+        try (FileOutputStream destOutput = new FileOutputStream(destFile)) {
             int readBytes = 0;
             byte[] buffer = new byte[4096];
             while ((readBytes = sourceInput.read(buffer)) > 0) {
                 destOutput.write(buffer, 0, readBytes);
-            }
-        } finally {
-            if (destOutput != null) {
-                destOutput.close();
             }
         }
     }

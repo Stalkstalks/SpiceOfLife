@@ -21,7 +21,7 @@ public class StringHelper {
             return "";
 
         boolean first = true;
-        StringBuffer strbuf = new StringBuffer();
+        StringBuilder strbuf = new StringBuilder();
         for (Object value : values) {
             if (value == null)
                 continue;

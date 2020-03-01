@@ -209,8 +209,7 @@ public class ItemFoodContainer extends Item implements INBTInventoryHaver, IEdib
     public ItemStack getBestFoodForPlayerToEat(ItemStack itemStack, EntityPlayer player) {
         IInventory inventory = getInventory(itemStack);
         int slotWithBestFood = MealPrioritizationHelper.findBestFoodForPlayerToEat(player, inventory);
-        ItemStack foodToEat = inventory.getStackInSlot(slotWithBestFood);
-        return foodToEat;
+        return inventory.getStackInSlot(slotWithBestFood);
     }    public boolean canBeEatenFrom(ItemStack stack) {
         return isOpen(stack) && !isEmpty(stack);
     }

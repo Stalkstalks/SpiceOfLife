@@ -83,8 +83,6 @@ public class FoodGroupConfig {
                     foodGroup.initFromConfig();
                     FoodGroupRegistry.addFoodGroup(foodGroup);
                 }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {

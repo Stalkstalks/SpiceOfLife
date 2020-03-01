@@ -39,7 +39,7 @@ public class TooltipHandler {
         if (ModConfig.FOOD_MODIFIER_ENABLED && event.itemStack != null && FoodHelper.isValidFood(event.itemStack)) {
             int totalFoodEaten = FoodHistory.get(event.entityPlayer).totalFoodsEatenAllTime;
             float foodModifier = 1f;
-            List<String> toolTipStringsToAdd = new ArrayList<String>();
+            List<String> toolTipStringsToAdd = new ArrayList<>();
             Set<FoodGroup> foodGroups = FoodGroupRegistry.getFoodGroupsForFood(event.itemStack);
             Set<FoodGroup> visibleFoodGroups = getFoodGroupsForDisplay(foodGroups);
             boolean canDiminish = FoodHelper.canFoodDiminish(event.itemStack);
@@ -87,7 +87,7 @@ public class TooltipHandler {
     }
 
     public static Set<FoodGroup> getFoodGroupsForDisplay(Set<FoodGroup> foodGroups) {
-        Set<FoodGroup> visibleFoodGroups = new TreeSet<FoodGroup>(foodGroupComparator);
+        Set<FoodGroup> visibleFoodGroups = new TreeSet<>(foodGroupComparator);
         for (FoodGroup foodGroup : foodGroups) {
             if (!foodGroup.hidden())
                 visibleFoodGroups.add(foodGroup);
@@ -96,7 +96,7 @@ public class TooltipHandler {
     }
 
     public static String joinFoodGroupsForDisplay(Set<FoodGroup> foodGroups, String delimiter, String resetFormatting) {
-        List<String> stringsToJoin = new ArrayList<String>();
+        List<String> stringsToJoin = new ArrayList<>();
         for (FoodGroup foodGroup : foodGroups) {
             stringsToJoin.add(foodGroup.formatString(EnumChatFormatting.ITALIC.toString() + foodGroup) + resetFormatting);
         }
