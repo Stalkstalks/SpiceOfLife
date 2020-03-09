@@ -12,19 +12,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import squeek.applecore.api.food.FoodEvent;
 import squeek.spiceoflife.ModConfig;
 import squeek.spiceoflife.compat.PacketDispatcher;
 import squeek.spiceoflife.foodtracker.foodgroups.FoodGroupRegistry;
-import squeek.spiceoflife.foodtracker.foodqueue.FixedTimeQueue;
 import squeek.spiceoflife.items.ItemFoodJournal;
 import squeek.spiceoflife.network.PacketFoodEatenAllTime;
 import squeek.spiceoflife.network.PacketFoodHistory;
 
 public class FoodTracker {
     public static int getFoodHistoryLengthInRelevantUnits(EntityPlayer player) {
-        return FoodHistory.get(player).getHistoryLengthInRelevantUnits();
+        return FoodHistory.get(player).getHistoryLength();
     }
 
     public static ItemStack getFoodLastEatenBy(EntityPlayer player) {
@@ -39,18 +37,17 @@ public class FoodTracker {
         if (event.player.worldObj.isRemote)
             return;
 
-        FoodEaten foodEaten = new FoodEaten(event.food, event.player);
+        FoodEaten foodEaten = new FoodEaten(event.food);
         foodEaten.foodValues = event.foodValues;
 
         FoodTracker.addFoodEatenByPlayer(foodEaten, event.player);
     }
 
-    public static boolean addFoodEatenByPlayer(FoodEaten foodEaten, EntityPlayer player) {
+    public static void addFoodEatenByPlayer(FoodEaten foodEaten, EntityPlayer player) {
         // client needs to be told by the server otherwise the client can get out of sync easily
         if (!player.worldObj.isRemote && player instanceof EntityPlayerMP)
             PacketDispatcher.get().sendTo(new PacketFoodHistory(foodEaten), (EntityPlayerMP) player);
-
-        return FoodHistory.get(player).addFood(foodEaten);
+        FoodHistory.get(player).addFood(foodEaten);
     }
 
     /**
@@ -60,24 +57,6 @@ public class FoodTracker {
     public void onEntityConstructing(EntityConstructing event) {
         if (event.entity instanceof EntityPlayer) {
             FoodHistory.get((EntityPlayer) event.entity);
-        }
-    }
-
-    /**
-     * Keep track of how many ticks the player has actively spent on the server,
-     * and make sure the food history prunes expired items
-     */
-    @SubscribeEvent
-    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-        if (!(event.entityLiving instanceof EntityPlayer))
-            return;
-
-        FoodHistory foodHistory = FoodHistory.get((EntityPlayer) event.entityLiving);
-        foodHistory.deltaTicksActive(1);
-
-        if (ModConfig.USE_TIME_QUEUE && !ModConfig.USE_HUNGER_QUEUE) {
-            FixedTimeQueue timeQueue = (FixedTimeQueue) foodHistory.getHistory();
-            timeQueue.prune(event.entityLiving.worldObj.getTotalWorldTime(), foodHistory.ticksActive);
         }
     }
 
@@ -98,7 +77,7 @@ public class FoodTracker {
         syncFoodHistory(foodHistory);
 
         // give food journal
-        if (!foodHistory.wasGivenFoodJournal && (ModConfig.GIVE_FOOD_JOURNAL_ON_START || (ModConfig.GIVE_FOOD_JOURNAL_ON_DIMINISHING_RETURNS && ModConfig.FOOD_EATEN_THRESHOLD == 0))) {
+        if (!foodHistory.wasGivenFoodJournal && ModConfig.GIVE_FOOD_JOURNAL_ON_START) {
             ItemFoodJournal.giveToPlayer(event.player);
             foodHistory.wasGivenFoodJournal = true;
         }
@@ -107,6 +86,7 @@ public class FoodTracker {
     public static void syncFoodHistory(FoodHistory foodHistory) {
         PacketDispatcher.get().sendTo(new PacketFoodEatenAllTime(foodHistory.totalFoodsEatenAllTime), (EntityPlayerMP) foodHistory.player);
         PacketDispatcher.get().sendTo(new PacketFoodHistory(foodHistory, true), (EntityPlayerMP) foodHistory.player);
+        MaxHealthHandler.updateFoodHPModifier(foodHistory.player);
     }
 
     /**
