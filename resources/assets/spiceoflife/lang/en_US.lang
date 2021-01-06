@@ -38,6 +38,10 @@ spiceoflife.gui.expires.in.food=Expires after eating any food %s more %s
 spiceoflife.gui.expires.in.hunger=Expires after eating %s hunger worth of any food
 spiceoflife.gui.food.num=Food #%d
 spiceoflife.gui.items.on.page=%d-%d of %d
+spiceoflife.gui.food_history.title=About my food
+spiceoflife.gui.food_history.worth_eaten=worth eaten:
+spiceoflife.gui.food_history.bonus_hearts=Bonus Hearts:
+spiceoflife.gui.food_history.next_heart=until next heart:
 
 # Items
 item.spiceoflife.bookfoodjournal.name=Food Journal

@@ -7,6 +7,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
@@ -65,7 +66,7 @@ public class GuiScreenFoodJournal extends GuiContainer {
     }
 
     public void drawHalfShank(int x, int y) {
-        GL11.glColor3f(1,1,1);
+        GL11.glColor3f(1, 1, 1);
         mc.getTextureManager().bindTexture(Gui.icons);
         GuiUtils.drawTexturedModalRect(this, x, y, 16, 27, 9, 9);
         GuiUtils.drawTexturedModalRect(this, x, y, 61, 27, 9, 9);
@@ -82,7 +83,7 @@ public class GuiScreenFoodJournal extends GuiContainer {
 
         String remaining = text.substring(first.length());
 
-        if(!remaining.isEmpty()) {
+        if (!remaining.isEmpty()) {
             out.addAll(GuiUtils.listFormattedStringToWidth(fontRendererObj, remaining, otherLineWidth));
         }
 
@@ -119,8 +120,9 @@ public class GuiScreenFoodJournal extends GuiContainer {
             int localY = y + 32;
             int blackColor = 0x000000;
 
-            int foodTitleWidth = fontRendererObj.getStringWidth("About my food");
-            GuiUtils.drawText(fontRendererObj, "About my food", localX + drawWidth / 2 - foodTitleWidth / 2, localY, Color.BLUE);
+            String foodHistoryTitle = I18n.format("spiceoflife.gui.food_history.title");
+            int foodTitleWidth = fontRendererObj.getStringWidth(foodHistoryTitle);
+            GuiUtils.drawText(fontRendererObj, foodHistoryTitle, localX + drawWidth / 2 - foodTitleWidth / 2, localY, Color.BLUE);
 
             int verticalIndent = 8;
 
@@ -131,14 +133,16 @@ public class GuiScreenFoodJournal extends GuiContainer {
 
             localY += verticalIndent + fontRendererObj.FONT_HEIGHT * 2;
             drawHalfShank(localX, localY);
-            List<String> list = splitWithDifWidth("worth eaten: " + foodsEaten, widthMinusPadding - hungerOffset, widthMinusPadding);
+            String worthEaten = I18n.format("spiceoflife.gui.food_history.worth_eaten");
+            List<String> list = splitWithDifWidth(worthEaten + " " + foodsEaten, widthMinusPadding - hungerOffset, widthMinusPadding);
             for (int i = 0; i < list.size(); i++) {
                 GuiUtils.drawText(fontRendererObj, list.get(i), localX + (i == 0 ? hungerOffset : 0), localY, blackColor);
                 localY += fontRendererObj.FONT_HEIGHT;
             }
 
             localY += verticalIndent;
-            list = GuiUtils.listFormattedStringToWidth(fontRendererObj, "Bonus Hearts: " + extraHearts, widthMinusPadding);
+            String bonusHearts = I18n.format("spiceoflife.gui.food_history.bonus_hearts");
+            list = GuiUtils.listFormattedStringToWidth(fontRendererObj, bonusHearts + " " + extraHearts, widthMinusPadding);
             for (String s : list) {
                 GuiUtils.drawText(fontRendererObj, s, localX, localY, blackColor);
                 localY += fontRendererObj.FONT_HEIGHT;
@@ -146,7 +150,8 @@ public class GuiScreenFoodJournal extends GuiContainer {
 
             localY += verticalIndent;
             drawHalfShank(localX, localY);
-            list = splitWithDifWidth("until next heart: " + foodsUntilNextMilestone, widthMinusPadding - hungerOffset, widthMinusPadding);
+            String nextHeart = I18n.format("spiceoflife.gui.food_history.next_heart");
+            list = splitWithDifWidth(nextHeart + " " + foodsUntilNextMilestone, widthMinusPadding - hungerOffset, widthMinusPadding);
             for (int i = 0; i < list.size(); i++) {
                 GuiUtils.drawText(fontRendererObj, list.get(i), localX + (i == 0 ? hungerOffset : 0), localY, blackColor);
                 localY += fontRendererObj.FONT_HEIGHT;
