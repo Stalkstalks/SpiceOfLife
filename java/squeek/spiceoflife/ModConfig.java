@@ -39,6 +39,16 @@ public class ModConfig implements IPackable, IPacketProcessor {
     private static final boolean FOOD_MODIFIER_ENABLED_DEFAULT = true;
     private static final String FOOD_MODIFIER_ENABLED_COMMENT = "If false, disables the entire diminishing returns part of the mod";
     /*
+     * DEV
+     */
+    private static final String CATEGORY_DEV = "dev";
+    private static final String CATEGORY_DEV_COMMENT =
+            "These config settings are only for developers";
+    private static final String DEV_LOGGING_ENABLED_NAME = "dev.logging.enabled";
+    private static final boolean DEV_LOGGING_ENABLED_DEFAULT = false;
+    private static final String DEV_LOGGING_ENABLED_COMMENT = "If true, enables extra logging to help modpack developers";
+    public static boolean DEV_LOGGING_ENABLED = ModConfig.DEV_LOGGING_ENABLED_DEFAULT;
+    /*
      * SERVER
      */
     private static final String CATEGORY_SERVER = "server";
@@ -188,6 +198,13 @@ public class ModConfig implements IPackable, IPacketProcessor {
         // only use the config value immediately when server-side; the client assumes false until the server syncs the config
         if (FMLCommonHandler.instance().getSide() == Side.SERVER)
             FOOD_MODIFIER_ENABLED = FOOD_MODIFIER_ENABLED_CONFIG_VAL;
+
+        /*
+         * DEV
+         */
+        config.getCategory(CATEGORY_DEV).setComment(CATEGORY_DEV_COMMENT);
+
+        DEV_LOGGING_ENABLED = config.get(CATEGORY_DEV, DEV_LOGGING_ENABLED_NAME, DEV_LOGGING_ENABLED_DEFAULT, DEV_LOGGING_ENABLED_COMMENT).getBoolean(DEV_LOGGING_ENABLED_DEFAULT);
 
         /*
          * SERVER
