@@ -1,0 +1,7 @@
+// Add your dependencies here
+
+dependencies {
+    shadowImplementation("com.udojava:EvalEx:2.1")
+
+    compile("com.github.GTNewHorizons:AppleCore:master-SNAPSHOT:dev")
+}

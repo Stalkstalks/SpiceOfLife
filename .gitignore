@@ -1,53 +1,28 @@
-# Builds & binaries
-build/
-bin/
-target/
-lib/
-launcher/
-.gradle/
-*.zip
-*.jar
-
-# Misc mod files
-media/
-libs/
-dummy/
-sources/
-
-# Tmp files
-*~
-*#
-
-# IDEs
+.gradle
+.settings
+/.idea/
+/run/
+/build/
+/eclipse/
 .classpath
 .project
-.settings
-.pydevproject
+/bin/
+/config/
+/crash-reports/
+/logs/
+options.txt
+/saves/
+usernamecache.json
+banned-ips.json
+banned-players.json
+eula.txt
+ops.json
+server.properties
+servers.dat
+usercache.json
+whitelist.json
+/out/
+*.iml
 *.ipr
 *.iws
-*.iml
-.idea
-
-# MCP Files
-docs/
-conf/
-eclipse/
-jars/
-logs/
-runtime/
-temp/
-reobf/
-CHANGELOG
-LICENSE.txt
-*.bat
-*.sh
-
-# Misc
-*.rej
-
-
-out/
-gradlew
-gradle/wrapper/gradle-wrapper.properties
-LICENSE-fml.txt
-run/
+src/main/resources/mixins.*.json
