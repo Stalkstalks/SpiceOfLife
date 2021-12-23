@@ -1,6 +1,7 @@
 package squeek.spiceoflife;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -38,7 +39,9 @@ public class ModSpiceOfLife {
         sourceFile = event.getSourceFile();
         ModConfig.init(event.getSuggestedConfigurationFile());
         ModContent.registerItems();
-        ModContent.registerRecipes();
+        if (!Loader.isModLoaded("dreamcraft")) {
+            ModContent.registerRecipes();
+        }
     }
 
     @EventHandler
