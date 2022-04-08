@@ -2,11 +2,10 @@ package squeek.spiceoflife.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.*;
 
 @SideOnly(Side.CLIENT)
-public class GuiScreenFoodJournal extends GuiContainer {
+public class GuiScreenFoodJournal extends GuiScreen {
     public static final DecimalFormat dfOne = new DecimalFormat("#.#");
     protected static final int numPerPage = 5;
     private static final ResourceLocation bookGuiTextures = new ResourceLocation("textures/gui/book.png");
@@ -37,10 +36,6 @@ public class GuiScreenFoodJournal extends GuiContainer {
     protected GuiButton buttonPrevPage;
     private int bookImageWidth = 192;
     private int bookImageHeight = 192;
-
-    public GuiScreenFoodJournal() {
-        super(Minecraft.getMinecraft().thePlayer.inventoryContainer);
-    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -240,11 +235,6 @@ public class GuiScreenFoodJournal extends GuiContainer {
 
     public static boolean isMouseInsideBox(int mouseX, int mouseY, int x, int y, int w, int h) {
         return mouseX >= x && mouseY >= y && mouseX < x + w && mouseY < y + h;
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {
-
     }
 
     @Override
