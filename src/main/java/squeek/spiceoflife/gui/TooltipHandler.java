@@ -33,10 +33,10 @@ public class TooltipHandler {
 
     @SubscribeEvent
     public void onItemTooltip(ItemTooltipEvent event) {
-        if (event == null || event.entityPlayer == null)
+        if (event == null || event.entityPlayer == null || event.itemStack == null || !FoodHelper.isValidFood(event.itemStack))
             return;
 
-        if (ModConfig.FOOD_MODIFIER_ENABLED && event.itemStack != null && FoodHelper.isValidFood(event.itemStack)) {
+        if (ModConfig.FOOD_MODIFIER_ENABLED) {
             int totalFoodEaten = FoodHistory.get(event.entityPlayer).totalFoodsEatenAllTime;
             float foodModifier = 1f;
             List<String> toolTipStringsToAdd = new ArrayList<>();
@@ -78,6 +78,31 @@ public class TooltipHandler {
                         boolean shouldShowNutritionalValue = foodGroupsToShow > 1;
                         String prefix = (foodGroupsToShow > 1 ? bulletPoint : "");
                         toolTipStringsToAdd.add(prefix + getEatenRecentlyTooltip(foodHistory, event.itemStack, foodGroup, shouldShowNutritionalValue));
+                        toolTipStringsToAdd.add(getFullHistoryToolTip(foodHistory, event.itemStack));
+                    }
+                }
+            }
+
+            event.toolTip.addAll(toolTipStringsToAdd);
+
+        } else {
+            int totalFoodEaten = FoodHistory.get(event.entityPlayer).totalFoodsEatenAllTime;
+            List<String> toolTipStringsToAdd = new ArrayList<>();
+
+            if (!(ModConfig.FOOD_EATEN_THRESHOLD > 0 && totalFoodEaten < ModConfig.FOOD_EATEN_THRESHOLD)) {
+                Set<FoodGroup> foodGroups = FoodGroupRegistry.getFoodGroupsForFood(event.itemStack);
+                Set<FoodGroup> visibleFoodGroups = getFoodGroupsForDisplay(foodGroups);
+                FoodHistory foodHistory = FoodHistory.get(event.entityPlayer);
+                boolean shouldShowPressShift = visibleFoodGroups.size() > 1 && !KeyHelper.isShiftKeyDown();
+                boolean shouldShowFoodGroupDetails = visibleFoodGroups.size() <= 1 || KeyHelper.isShiftKeyDown();
+                String bulletPoint = EnumChatFormatting.DARK_GRAY + "- " + EnumChatFormatting.GRAY;
+
+                if (shouldShowPressShift)
+                    toolTipStringsToAdd.add(bulletPoint + EnumChatFormatting.DARK_GRAY + StatCollector.translateToLocalFormatted("spiceoflife.tooltip.hold.key.for.details", EnumChatFormatting.YELLOW.toString() + EnumChatFormatting.ITALIC + "Shift" + EnumChatFormatting.RESET + EnumChatFormatting.DARK_GRAY));
+
+                if (shouldShowFoodGroupDetails) {
+                    int foodGroupsToShow = Math.max(1, visibleFoodGroups.size());
+                    for (int i = 0; i < foodGroupsToShow; i++) {
                         toolTipStringsToAdd.add(getFullHistoryToolTip(foodHistory, event.itemStack));
                     }
                 }
