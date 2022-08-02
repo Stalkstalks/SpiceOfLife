@@ -17,6 +17,7 @@ import java.util.stream.StreamSupport;
 public final class FoodLists {
     private static List<ItemStack> allFoods;
 
+    @SuppressWarnings("unchecked")
     public static void setUp() {
         if(ModConfig.DEV_LOGGING_ENABLED)
             ModSpiceOfLife.Log.info("Starting populating food list.");
