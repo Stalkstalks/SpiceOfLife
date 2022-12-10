@@ -83,5 +83,4 @@ public interface IByteIO {
 
     @Override
     String toString();
-
 }

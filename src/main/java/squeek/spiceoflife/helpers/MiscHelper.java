@@ -2,14 +2,13 @@ package squeek.spiceoflife.helpers;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.MovingObjectPosition;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.MovingObjectPosition;
 
 public class MiscHelper {
     public static final int TICKS_PER_SEC = 20;
@@ -20,8 +19,7 @@ public class MiscHelper {
         Minecraft mc = Minecraft.getMinecraft();
         MovingObjectPosition mouseOver = mc.objectMouseOver;
 
-        if (mouseOver == null || mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.MISS)
-            return true;
+        if (mouseOver == null || mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) return true;
         else if (mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             int x = mc.objectMouseOver.blockX;
             int y = mc.objectMouseOver.blockY;
@@ -34,8 +32,7 @@ public class MiscHelper {
 
     public static void tryCloseStream(Closeable stream) {
         try {
-            if (stream != null)
-                stream.close();
+            if (stream != null) stream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

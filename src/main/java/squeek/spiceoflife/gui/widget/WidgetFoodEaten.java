@@ -42,8 +42,7 @@ public class WidgetFoodEaten extends Gui {
             displayName = displayName.substring(0, displayName.length() - 1);
             truncated = true;
         }
-        if (truncated)
-            displayName += "...";
+        if (truncated) displayName += "...";
 
         return displayName;
     }
@@ -51,27 +50,29 @@ public class WidgetFoodEaten extends Gui {
     public int hungerBarsNeeded() {
         FoodValues defaultFoodValues = FoodValues.get(foodEaten.itemStack);
 
-        if (defaultFoodValues == null)
-            return 0;
+        if (defaultFoodValues == null) return 0;
 
-        return (int) Math.max(1, Math.ceil(Math.abs(Math.max(foodEaten.foodValues.hunger, defaultFoodValues.hunger)) / 2f));
+        return (int)
+                Math.max(1, Math.ceil(Math.abs(Math.max(foodEaten.foodValues.hunger, defaultFoodValues.hunger)) / 2f));
     }
 
     public void draw(int x, int y) {
         x += PADDING_LEFT;
 
-        if (foodEaten.itemStack == null)
-            return;
+        if (foodEaten.itemStack == null) return;
 
         GL11.glColor4f(1, 1, 1, 1);
         GL11.glDisable(GL11.GL_LIGHTING);
 
         FoodValues defaultFoodValues = FoodValues.get(foodEaten.itemStack);
 
-        if (defaultFoodValues == null)
-            return;
+        if (defaultFoodValues == null) return;
 
-        mc.fontRenderer.drawString(getDisplayName(), x, y, ColorHelper.getRelativeColorInt(foodEaten.foodValues.hunger, 0, defaultFoodValues.hunger));
+        mc.fontRenderer.drawString(
+                getDisplayName(),
+                x,
+                y,
+                ColorHelper.getRelativeColorInt(foodEaten.foodValues.hunger, 0, defaultFoodValues.hunger));
 
         int barsNeeded = hungerBarsNeeded();
 
@@ -81,14 +82,11 @@ public class WidgetFoodEaten extends Gui {
         for (int i = 0; i < barsNeeded * 2; i += 2) {
             this.drawTexturedModalRect(x, y, 16, 27, 9, 9);
 
-            if (foodEaten.foodValues.hunger < 0)
-                drawTexturedModalRect(x, y, 34, 27, 9, 9);
+            if (foodEaten.foodValues.hunger < 0) drawTexturedModalRect(x, y, 34, 27, 9, 9);
             else if (foodEaten.foodValues.hunger > i + 1 || defaultFoodValues.hunger == foodEaten.foodValues.hunger)
                 drawTexturedModalRect(x, y, 16, 27, 9, 9);
-            else if (foodEaten.foodValues.hunger == i + 1)
-                drawTexturedModalRect(x, y, 124, 27, 9, 9);
-            else
-                drawTexturedModalRect(x, y, 34, 27, 9, 9);
+            else if (foodEaten.foodValues.hunger == i + 1) drawTexturedModalRect(x, y, 124, 27, 9, 9);
+            else drawTexturedModalRect(x, y, 34, 27, 9, 9);
 
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_ONE_MINUS_DST_COLOR);

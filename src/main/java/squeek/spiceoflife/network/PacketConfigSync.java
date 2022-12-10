@@ -6,8 +6,7 @@ import squeek.spiceoflife.ModConfig;
 import squeek.spiceoflife.compat.IByteIO;
 
 public class PacketConfigSync extends PacketBase {
-    public PacketConfigSync() {
-    }
+    public PacketConfigSync() {}
 
     @Override
     public void pack(IByteIO data) {
@@ -23,5 +22,4 @@ public class PacketConfigSync extends PacketBase {
     public PacketBase processAndReply(Side side, EntityPlayer player) {
         return ModConfig.instance.processAndReply(side, player);
     }
-
 }

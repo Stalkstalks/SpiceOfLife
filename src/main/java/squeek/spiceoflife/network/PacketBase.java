@@ -8,8 +8,7 @@ import squeek.spiceoflife.interfaces.IPackable;
 import squeek.spiceoflife.interfaces.IPacketProcessor;
 
 public abstract class PacketBase implements IMessage, IPackable, IPacketProcessor {
-    public PacketBase() {
-    }
+    public PacketBase() {}
 
     public Packet getPacket() {
         return PacketHandler.channel.getPacketFrom(this);

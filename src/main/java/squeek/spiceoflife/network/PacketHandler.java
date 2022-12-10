@@ -34,11 +34,9 @@ public class PacketHandler implements IMessageHandler<PacketBase, PacketBase> {
 
         public static int getIdOf(PacketBase packet) {
             for (PacketType packetType : PacketType.values()) {
-                if (packetType.packet.isInstance(packet))
-                    return packetType.ordinal();
+                if (packetType.packet.isInstance(packet)) return packetType.ordinal();
             }
             return -1;
         }
     }
-
 }

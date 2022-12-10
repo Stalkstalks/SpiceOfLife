@@ -1,11 +1,10 @@
 package squeek.spiceoflife.foodtracker;
 
+import java.util.HashSet;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 import squeek.spiceoflife.interfaces.ISaveable;
-
-import java.util.HashSet;
 
 public class FoodSet extends HashSet<FoodEaten> implements ISaveable {
 

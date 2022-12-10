@@ -2,12 +2,6 @@ package squeek.spiceoflife.foodtracker.foodgroups;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.io.FilenameUtils;
-import squeek.spiceoflife.ModInfo;
-import squeek.spiceoflife.ModSpiceOfLife;
-import squeek.spiceoflife.helpers.FileHelper;
-import squeek.spiceoflife.helpers.MiscHelper;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,9 +10,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.FilenameUtils;
+import squeek.spiceoflife.ModInfo;
+import squeek.spiceoflife.ModSpiceOfLife;
+import squeek.spiceoflife.helpers.FileHelper;
+import squeek.spiceoflife.helpers.MiscHelper;
 
 public class FoodGroupConfig {
-    private static final Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().create();
+    private static final Gson gson = new GsonBuilder()
+            .enableComplexMapKeySerialization()
+            .setPrettyPrinting()
+            .create();
     private static File[] configFiles;
 
     public static void setup(File configDirectory) {
@@ -40,7 +42,8 @@ public class FoodGroupConfig {
                 File sourceFile = new File(ModSpiceOfLife.instance.sourceFile, exampleFoodGroupRelativePath);
                 FileHelper.copyFile(sourceFile, exampleFoodGroupDest, shouldOverwrite);
             } else {
-                InputStream exampleFoodGroupInputStream = FoodGroupConfig.class.getClassLoader().getResourceAsStream(exampleFoodGroupRelativePath);
+                InputStream exampleFoodGroupInputStream =
+                        FoodGroupConfig.class.getClassLoader().getResourceAsStream(exampleFoodGroupRelativePath);
                 FileHelper.copyFile(exampleFoodGroupInputStream, exampleFoodGroupDest, shouldOverwrite);
                 exampleFoodGroupInputStream.close();
             }
@@ -58,7 +61,8 @@ public class FoodGroupConfig {
         }
         BufferedReader exampleFoodGroupReader = null;
         try {
-            exampleFoodGroupReader = new BufferedReader(new InputStreamReader(exampleFoodGroupStream, StandardCharsets.UTF_8));
+            exampleFoodGroupReader =
+                    new BufferedReader(new InputStreamReader(exampleFoodGroupStream, StandardCharsets.UTF_8));
             String firstLine = exampleFoodGroupReader.readLine();
             return firstLine == null || !firstLine.equals("// Mod Version: " + ModInfo.VERSION);
         } catch (IOException e) {
@@ -71,8 +75,7 @@ public class FoodGroupConfig {
     public static void load() {
         for (File configFile : configFiles) {
             boolean isJson = FilenameUtils.getExtension(configFile.getName()).equalsIgnoreCase("json");
-            if (!isJson)
-                continue;
+            if (!isJson) continue;
 
             InputStreamReader reader = null;
             try {
@@ -90,5 +93,4 @@ public class FoodGroupConfig {
             }
         }
     }
-
 }

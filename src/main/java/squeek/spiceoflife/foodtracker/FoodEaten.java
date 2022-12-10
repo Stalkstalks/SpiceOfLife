@@ -1,5 +1,6 @@
 package squeek.spiceoflife.foodtracker;
 
+import java.util.Set;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,15 +11,12 @@ import squeek.spiceoflife.foodtracker.foodgroups.FoodGroupRegistry;
 import squeek.spiceoflife.interfaces.IPackable;
 import squeek.spiceoflife.interfaces.ISaveable;
 
-import java.util.Set;
-
 public class FoodEaten implements IPackable, ISaveable {
     public static final FoodValues dummyFoodValues = new FoodValues(0, 0.0f);
     public FoodValues foodValues = FoodEaten.dummyFoodValues;
     public ItemStack itemStack = null;
 
-    public FoodEaten() {
-    }
+    public FoodEaten() {}
 
     public FoodEaten(ItemStack food) {
         this.itemStack = food;
@@ -40,12 +38,9 @@ public class FoodEaten implements IPackable, ISaveable {
         final FoodEaten other = ((FoodEaten) obj);
         final Item item = itemStack.getItem();
         final Item otherItem = other.itemStack.getItem();
-        return (
-            Item.itemRegistry.getNameForObject(item).equals(Item.itemRegistry.getNameForObject(otherItem)) &&
-                item.equals(otherItem) &&
-                this.itemStack.getItemDamage() == other.itemStack.getItemDamage()
-        );
-
+        return (Item.itemRegistry.getNameForObject(item).equals(Item.itemRegistry.getNameForObject(otherItem))
+                && item.equals(otherItem)
+                && this.itemStack.getItemDamage() == other.itemStack.getItemDamage());
     }
 
     public static FoodEaten loadFromNBTData(NBTTagCompound nbtFood) {
@@ -60,10 +55,8 @@ public class FoodEaten implements IPackable, ISaveable {
 
     @Override
     public void writeToNBTData(NBTTagCompound nbtFood) {
-        if (itemStack != null)
-            itemStack.writeToNBT(nbtFood);
-        if (foodValues != null && foodValues.hunger != 0)
-            nbtFood.setShort("Hunger", (short) foodValues.hunger);
+        if (itemStack != null) itemStack.writeToNBT(nbtFood);
+        if (foodValues != null && foodValues.hunger != 0) nbtFood.setShort("Hunger", (short) foodValues.hunger);
         if (foodValues != null && foodValues.saturationModifier != 0)
             nbtFood.setFloat("Saturation", foodValues.saturationModifier);
     }

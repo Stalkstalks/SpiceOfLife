@@ -10,6 +10,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.relauncher.Side;
+import java.io.File;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,14 +25,13 @@ import squeek.spiceoflife.gui.TooltipHandler;
 import squeek.spiceoflife.helpers.GuiHelper;
 import squeek.spiceoflife.network.PacketHandler;
 
-import java.io.File;
-
 @Mod(modid = ModInfo.MODID, version = ModInfo.VERSION, dependencies = "required-after:AppleCore")
 public class ModSpiceOfLife {
     public static final Logger Log = LogManager.getLogger(ModInfo.MODID);
 
     @Instance(ModInfo.MODID)
     public static ModSpiceOfLife instance;
+
     public File sourceFile;
 
     @EventHandler
@@ -64,7 +64,6 @@ public class ModSpiceOfLife {
     public void postInit(FMLPostInitializationEvent event) {
         FoodGroupConfig.load();
         FoodLists.setUp();
-
     }
 
     @EventHandler

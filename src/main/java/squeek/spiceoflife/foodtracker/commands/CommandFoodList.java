@@ -1,5 +1,7 @@
 package squeek.spiceoflife.foodtracker.commands;
 
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -11,9 +13,6 @@ import net.minecraft.util.EnumChatFormatting;
 import squeek.spiceoflife.foodtracker.FoodHistory;
 import squeek.spiceoflife.foodtracker.FoodTracker;
 import squeek.spiceoflife.foodtracker.ProgressInfo;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class CommandFoodList extends CommandBase {
     @Override
@@ -29,20 +28,17 @@ public class CommandFoodList extends CommandBase {
     @SuppressWarnings("rawtypes")
     @Override
     public List addTabCompletionOptions(ICommandSender commandSender, String[] curArgs) {
-        if (curArgs.length == 1)
-            return Arrays.asList("size", "sync");
+        if (curArgs.length == 1) return Arrays.asList("size", "sync");
         else if (curArgs.length == 2)
-            return getListOfStringsMatchingLastWord(curArgs, MinecraftServer.getServer().getAllUsernames());
-        else
-            return null;
+            return getListOfStringsMatchingLastWord(
+                    curArgs, MinecraftServer.getServer().getAllUsernames());
+        else return null;
     }
 
     @Override
     public int compareTo(Object obj) {
-        if (obj instanceof ICommand)
-            return super.compareTo((ICommand) obj);
-        else
-            return 0;
+        if (obj instanceof ICommand) return super.compareTo((ICommand) obj);
+        else return 0;
     }
 
     @Override
@@ -64,7 +60,9 @@ public class CommandFoodList extends CommandBase {
     public void processCommand(ICommandSender commandSender, String[] args) {
         if (args.length > 0) {
             final boolean isOp = commandSender.canCommandSenderUseCommand(4, "targetOtherPlayer");
-            final EntityPlayerMP player = (isOp && args.length > 1) ? getPlayer(commandSender, args[1]) : getCommandSenderAsPlayer(commandSender);
+            final EntityPlayerMP player = (isOp && args.length > 1)
+                    ? getPlayer(commandSender, args[1])
+                    : getCommandSenderAsPlayer(commandSender);
             final FoodHistory foodHistory = FoodHistory.get(player);
 
             if (args[0].equals("size")) {
@@ -73,14 +71,19 @@ public class CommandFoodList extends CommandBase {
                 final int milestone = progressInfo.milestonesAchieved();
                 final int foodsUntilNextMilestone = progressInfo.foodsUntilNextMilestone();
 
-                commandSender.addChatMessage(new ChatComponentText("" + EnumChatFormatting.BOLD + EnumChatFormatting.DARK_AQUA + player.getDisplayName() + "'s" + EnumChatFormatting.RESET + " food stats:"));
+                commandSender.addChatMessage(
+                        new ChatComponentText("" + EnumChatFormatting.BOLD + EnumChatFormatting.DARK_AQUA
+                                + player.getDisplayName() + "'s" + EnumChatFormatting.RESET + " food stats:"));
                 commandSender.addChatMessage(new ChatComponentText("Half-Shanks worth eaten: " + foodsEaten));
-                commandSender.addChatMessage(new ChatComponentText("Bonus Hearts: " + (milestone * ProgressInfo.HEARTS_PER_MILESTONE)));
-                commandSender.addChatMessage(new ChatComponentText("Half-Shanks until next bonus heart: " + foodsUntilNextMilestone));
+                commandSender.addChatMessage(
+                        new ChatComponentText("Bonus Hearts: " + (milestone * ProgressInfo.HEARTS_PER_MILESTONE)));
+                commandSender.addChatMessage(
+                        new ChatComponentText("Half-Shanks until next bonus heart: " + foodsUntilNextMilestone));
                 return;
             } else if (args[0].equals("sync")) {
                 FoodTracker.syncFoodHistory(foodHistory);
-                commandSender.addChatMessage(new ChatComponentText("Synced food history for " + player.getDisplayName()));
+                commandSender.addChatMessage(
+                        new ChatComponentText("Synced food history for " + player.getDisplayName()));
                 return;
             }
         }
@@ -91,6 +94,4 @@ public class CommandFoodList extends CommandBase {
     public boolean equals(Object obj) {
         return super.equals(obj) || obj instanceof ICommand && compareTo(obj) == 0;
     }
-
-
 }

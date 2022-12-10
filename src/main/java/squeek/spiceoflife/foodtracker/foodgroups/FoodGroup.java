@@ -2,6 +2,11 @@ package squeek.spiceoflife.foodtracker.foodgroups;
 
 import com.google.gson.annotations.SerializedName;
 import cpw.mods.fml.common.registry.GameRegistry;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -12,34 +17,30 @@ import squeek.spiceoflife.foodtracker.FoodModifier;
 import squeek.spiceoflife.helpers.OreDictionaryHelper;
 import squeek.spiceoflife.interfaces.IPackable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class FoodGroup implements IPackable {
-    transient static final EnumChatFormatting DEFAULT_FORMATTING = EnumChatFormatting.GRAY;
-    transient public String identifier;
-    transient public EnumChatFormatting formatting;
+    static final transient EnumChatFormatting DEFAULT_FORMATTING = EnumChatFormatting.GRAY;
+    public transient String identifier;
+    public transient EnumChatFormatting formatting;
     public boolean enabled = true;
     public String name = null;
     public boolean blacklist = false;
     public String formula = null;
     public String color = DEFAULT_FORMATTING.getFriendlyName();
+
     @SerializedName("food")
     public Map<String, List<String>> foodStringsByType;
+
     @SerializedName("exclude")
     public Map<String, List<String>> excludedFoodStringsByType;
-    transient private List<FoodGroupMember> included = new ArrayList<>();
-    transient private List<FoodGroupMember> excluded = new ArrayList<>();
-    transient private Set<Integer> matchingItemHashes = new HashSet<>();
-    transient private Set<Integer> excludedItemHashes = new HashSet<>();
-    transient private FoodModifier foodModifier;
+
+    private transient List<FoodGroupMember> included = new ArrayList<>();
+    private transient List<FoodGroupMember> excluded = new ArrayList<>();
+    private transient Set<Integer> matchingItemHashes = new HashSet<>();
+    private transient Set<Integer> excludedItemHashes = new HashSet<>();
+    private transient FoodModifier foodModifier;
     private boolean hidden = false;
 
-    public FoodGroup() {
-    }
+    public FoodGroup() {}
 
     public FoodGroup(String identifier, String name) {
         this.identifier = identifier;
@@ -48,11 +49,11 @@ public class FoodGroup implements IPackable {
 
     public void initFromConfig() {
         if (foodStringsByType == null)
-            throw new RuntimeException(toString() + " food group (" + identifier + ".json) missing required \"food\" property");
+            throw new RuntimeException(
+                    toString() + " food group (" + identifier + ".json) missing required \"food\" property");
 
         formatting = EnumChatFormatting.getValueByName(color);
-        if (formatting == null)
-            formatting = DEFAULT_FORMATTING;
+        if (formatting == null) formatting = DEFAULT_FORMATTING;
 
         List<String> oredictStrings = foodStringsByType.get("oredict");
         if (oredictStrings != null) {
@@ -65,8 +66,7 @@ public class FoodGroup implements IPackable {
         if (itemStrings != null) {
             for (String itemString : itemStrings) {
                 ItemStack item = getItemFromString(itemString);
-                if (item != null)
-                    addFood(item);
+                if (item != null) addFood(item);
             }
         }
 
@@ -82,8 +82,7 @@ public class FoodGroup implements IPackable {
             if (excludedItemStrings != null) {
                 for (String itemString : excludedItemStrings) {
                     ItemStack item = getItemFromString(itemString);
-                    if (item != null)
-                        excludeFood(item);
+                    if (item != null) excludeFood(item);
                 }
             }
         }
@@ -119,10 +118,8 @@ public class FoodGroup implements IPackable {
     }
 
     public String getLocalizedName() {
-        if (name != null)
-            return StatCollector.translateToLocal(name);
-        else
-            return StatCollector.translateToLocal("spiceoflife.foodgroup." + identifier);
+        if (name != null) return StatCollector.translateToLocal(name);
+        else return StatCollector.translateToLocal("spiceoflife.foodgroup." + identifier);
     }
 
     public void addFood(FoodGroupMember foodMember) {
@@ -151,11 +148,13 @@ public class FoodGroup implements IPackable {
     }
 
     public boolean isFoodIncluded(ItemStack food) {
-        return !isFoodExcluded(food) && matchingItemHashes.contains(OreDictionaryHelper.getItemStackHash(food)) || matchingItemHashes.contains(OreDictionaryHelper.getWildCardItemStackHash(food));
+        return !isFoodExcluded(food) && matchingItemHashes.contains(OreDictionaryHelper.getItemStackHash(food))
+                || matchingItemHashes.contains(OreDictionaryHelper.getWildCardItemStackHash(food));
     }
 
     public boolean isFoodExcluded(ItemStack food) {
-        return excludedItemHashes.contains(OreDictionaryHelper.getItemStackHash(food)) || excludedItemHashes.contains(OreDictionaryHelper.getWildCardItemStackHash(food));
+        return excludedItemHashes.contains(OreDictionaryHelper.getItemStackHash(food))
+                || excludedItemHashes.contains(OreDictionaryHelper.getWildCardItemStackHash(food));
     }
 
     public Set<Integer> getMatchingItemStackHashes() {
@@ -233,10 +232,8 @@ public class FoodGroup implements IPackable {
 
     @Override
     public boolean equals(Object obj) {
-        if (super.equals(obj))
-            return true;
-        if (obj instanceof FoodGroup)
-            return ((FoodGroup) obj).identifier.equals(identifier);
+        if (super.equals(obj)) return true;
+        if (obj instanceof FoodGroup) return ((FoodGroup) obj).identifier.equals(identifier);
 
         return false;
     }

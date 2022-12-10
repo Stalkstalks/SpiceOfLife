@@ -11,8 +11,7 @@ public class PacketFoodGroup extends PacketBase {
     private FoodGroup foodGroup = null;
     private int totalFoodGroups = 0;
 
-    public PacketFoodGroup() {
-    }
+    public PacketFoodGroup() {}
 
     public PacketFoodGroup(FoodGroup foodGroup) {
         this.foodGroup = foodGroup;
@@ -24,8 +23,7 @@ public class PacketFoodGroup extends PacketBase {
 
     @Override
     public void pack(IByteIO data) {
-        if (foodGroup == null)
-            return;
+        if (foodGroup == null) return;
 
         data.writeInt(FoodGroupRegistry.numFoodGroups());
         foodGroup.pack(data);
@@ -41,12 +39,12 @@ public class PacketFoodGroup extends PacketBase {
     @Override
     public PacketBase processAndReply(Side side, EntityPlayer player) {
         if (++foodGroupsRecieved > totalFoodGroups)
-            throw new RuntimeException("Recieved more food groups than should exist (recieved: " + foodGroupsRecieved + ", total: " + totalFoodGroups + ")");
+            throw new RuntimeException("Recieved more food groups than should exist (recieved: " + foodGroupsRecieved
+                    + ", total: " + totalFoodGroups + ")");
 
         FoodGroupRegistry.addFoodGroup(foodGroup);
 
-        if (foodGroupsRecieved == totalFoodGroups)
-            FoodGroupRegistry.setInStone();
+        if (foodGroupsRecieved == totalFoodGroups) FoodGroupRegistry.setInStone();
 
         return null;
     }
