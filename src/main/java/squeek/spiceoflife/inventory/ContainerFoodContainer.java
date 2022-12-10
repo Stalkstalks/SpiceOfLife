@@ -12,10 +12,12 @@ public class ContainerFoodContainer extends ContainerGeneric {
     public int slotsX;
     public int slotsY;
     protected FoodContainerInventory foodContainerInventory;
+    private final int heldSlotId;
 
     public ContainerFoodContainer(InventoryPlayer playerInventory, FoodContainerInventory foodContainerInventory) {
         super(foodContainerInventory);
         this.foodContainerInventory = foodContainerInventory;
+        this.heldSlotId = playerInventory.currentItem;
 
         slotsX = (int) (GuiHelper.STANDARD_GUI_WIDTH / 2f
                 - (inventory.getSizeInventory() * GuiHelper.STANDARD_SLOT_WIDTH / 2f));
@@ -70,6 +72,9 @@ public class ContainerFoodContainer extends ContainerGeneric {
 
     @Override
     public ItemStack slotClick(int slotNum, int mouseButton, int modifier, EntityPlayer player) {
+        // Don't allow picking up item currently opened
+        if (slotNum - 9 * 3 - foodContainerInventory.getSizeInventory() == heldSlotId) return null;
+
         // make sure the correct ItemStack instance is always used when the player is moving
         // the food container around while they have it open
         ItemStack putDownStack = player.inventory.getItemStack();
