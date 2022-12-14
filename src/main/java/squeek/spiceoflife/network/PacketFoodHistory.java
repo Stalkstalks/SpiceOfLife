@@ -10,8 +10,7 @@ public class PacketFoodHistory extends PacketBase {
     private FoodHistory foodHistory = null;
     private boolean shouldOverwrite = false;
 
-    public PacketFoodHistory() {
-    }
+    public PacketFoodHistory() {}
 
     public PacketFoodHistory(FoodHistory foodHistory, boolean shouldOverwrite) {
         this(foodHistory);
@@ -29,8 +28,7 @@ public class PacketFoodHistory extends PacketBase {
 
     @Override
     public void pack(IByteIO data) {
-        if (foodHistory == null)
-            return;
+        if (foodHistory == null) return;
 
         data.writeBoolean(shouldOverwrite);
         foodHistory.pack(data);

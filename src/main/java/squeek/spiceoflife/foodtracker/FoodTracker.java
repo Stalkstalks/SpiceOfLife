@@ -34,8 +34,7 @@ public class FoodTracker {
      */
     @SubscribeEvent
     public void onFoodEaten(FoodEvent.FoodEaten event) {
-        if (event.player.worldObj.isRemote)
-            return;
+        if (event.player.worldObj.isRemote) return;
 
         FoodEaten foodEaten = new FoodEaten(event.food);
         foodEaten.foodValues = event.foodValues;
@@ -84,7 +83,8 @@ public class FoodTracker {
     }
 
     public static void syncFoodHistory(FoodHistory foodHistory) {
-        PacketDispatcher.get().sendTo(new PacketFoodEatenAllTime(foodHistory.totalFoodsEatenAllTime), (EntityPlayerMP) foodHistory.player);
+        PacketDispatcher.get().sendTo(new PacketFoodEatenAllTime(foodHistory.totalFoodsEatenAllTime), (EntityPlayerMP)
+                foodHistory.player);
         PacketDispatcher.get().sendTo(new PacketFoodHistory(foodHistory, true), (EntityPlayerMP) foodHistory.player);
         MaxHealthHandler.updateFoodHPModifier(foodHistory.player);
     }
@@ -117,8 +117,7 @@ public class FoodTracker {
      */
     @SubscribeEvent
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            return;
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
 
         // load any persistent food history data
         FoodHistory foodHistory = FoodHistory.get(event.player);
@@ -133,7 +132,6 @@ public class FoodTracker {
      */
     @SubscribeEvent
     public void onClientConnectedToServer(ClientConnectedToServerEvent event) {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            ModConfig.assumeClientOnly();
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) ModConfig.assumeClientOnly();
     }
 }

@@ -8,8 +8,7 @@ import squeek.spiceoflife.foodtracker.FoodHistory;
 public class PacketFoodEatenAllTime extends PacketBase {
     private int foodEatenAllTime = 0;
 
-    public PacketFoodEatenAllTime() {
-    }
+    public PacketFoodEatenAllTime() {}
 
     public PacketFoodEatenAllTime(int foodEatenAllTime) {
         this.foodEatenAllTime = foodEatenAllTime;

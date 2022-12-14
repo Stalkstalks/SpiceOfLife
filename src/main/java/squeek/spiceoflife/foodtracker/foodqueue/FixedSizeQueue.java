@@ -19,8 +19,7 @@ public class FixedSizeQueue extends FoodQueue {
     @Override
     public boolean add(FoodEaten o) {
         boolean added = super.add(o);
-        if (added)
-            trimToMaxSize();
+        if (added) trimToMaxSize();
         return added;
     }
 
@@ -32,5 +31,4 @@ public class FixedSizeQueue extends FoodQueue {
         this.limit = limit;
         trimToMaxSize();
     }
-
 }

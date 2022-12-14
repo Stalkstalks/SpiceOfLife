@@ -14,15 +14,11 @@ public class ColorHelper {
     };
 
     private static final EnumChatFormatting[] booleanColorRange = {
-        EnumChatFormatting.DARK_RED,
-        EnumChatFormatting.RED,
-        EnumChatFormatting.DARK_GREEN,
-        EnumChatFormatting.GREEN
+        EnumChatFormatting.DARK_RED, EnumChatFormatting.RED, EnumChatFormatting.DARK_GREEN, EnumChatFormatting.GREEN
     };
 
     public static String getRelativeColor(double val, double min, double max) {
-        if (min == max)
-            return EnumChatFormatting.RESET.toString();
+        if (min == max) return EnumChatFormatting.RESET.toString();
         else if ((max > min && val > max) || (min > max && val < max))
             return EnumChatFormatting.WHITE.toString() + EnumChatFormatting.BOLD;
         else if ((max > min && val < min) || (min > max && val > min))
@@ -33,19 +29,17 @@ public class ColorHelper {
     }
 
     public static int getRelativeColorInt(double val, double min, double max) {
-        if (min == max)
-            return 0x000000;
+        if (min == max) return 0x000000;
 
-        if (val > max)
-            return 0x1ED6B1;
+        if (val > max) return 0x1ED6B1;
 
         double full, f1, f2;
         full = max - min;
         f1 = (max - val) / full;
         f2 = (val - min) / full;
-        int[] minColor = new int[]{150, 0, 0};
-        int[] maxColor = new int[]{0, 100, 0};
-        int[] color = new int[]{
+        int[] minColor = new int[] {150, 0, 0};
+        int[] maxColor = new int[] {0, 100, 0};
+        int[] color = new int[] {
             (int) (maxColor[0] * f2 + minColor[0] * f1),
             (int) (maxColor[1] * f2 + minColor[1] * f1),
             (int) (maxColor[2] * f2 + minColor[2] * f1)

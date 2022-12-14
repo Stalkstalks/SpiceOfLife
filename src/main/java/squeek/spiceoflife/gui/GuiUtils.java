@@ -1,10 +1,9 @@
 package squeek.spiceoflife.gui;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-
 import java.awt.*;
 import java.util.List;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 
 public class GuiUtils {
     public static void drawText(FontRenderer fontRenderer, String text, int x, int y, Color color) {

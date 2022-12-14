@@ -36,15 +36,15 @@ public class NBTInventory implements ISaveable, IInventory {
 
     public boolean isInventoryEmpty() {
         for (ItemStack itemStack : inventoryItems) {
-            if (itemStack != null)
-                return false;
+            if (itemStack != null) return false;
         }
         return true;
     }
 
     public boolean isInventoryFull() {
         for (ItemStack itemStack : inventoryItems) {
-            if (itemStack == null || itemStack.stackSize < Math.min(getInventoryStackLimit(), itemStack.getMaxStackSize()))
+            if (itemStack == null
+                    || itemStack.stackSize < Math.min(getInventoryStackLimit(), itemStack.getMaxStackSize()))
                 return false;
         }
         return true;
@@ -80,10 +80,8 @@ public class NBTInventory implements ISaveable, IInventory {
 
     @Override
     public ItemStack getStackInSlot(int slotNum) {
-        if (isValidSlotNum(slotNum))
-            return inventoryItems[slotNum];
-        else
-            return null;
+        if (isValidSlotNum(slotNum)) return inventoryItems[slotNum];
+        else return null;
     }
 
     @Override
@@ -91,8 +89,7 @@ public class NBTInventory implements ISaveable, IInventory {
         ItemStack itemStack = getStackInSlot(slotNum);
 
         if (itemStack != null) {
-            if (itemStack.stackSize <= count)
-                setInventorySlotContents(slotNum, null);
+            if (itemStack.stackSize <= count) setInventorySlotContents(slotNum, null);
             else {
                 itemStack = itemStack.splitStack(count);
                 markDirty();
@@ -111,8 +108,7 @@ public class NBTInventory implements ISaveable, IInventory {
 
     @Override
     public void setInventorySlotContents(int slotNum, ItemStack itemStack) {
-        if (!isValidSlotNum(slotNum))
-            return;
+        if (!isValidSlotNum(slotNum)) return;
 
         boolean wasEmpty = getStackInSlot(slotNum) == null;
         inventoryItems[slotNum] = itemStack;
@@ -120,44 +116,35 @@ public class NBTInventory implements ISaveable, IInventory {
         if (itemStack != null && itemStack.stackSize > getInventoryStackLimit())
             itemStack.stackSize = getInventoryStackLimit();
 
-        if (wasEmpty && itemStack != null)
-            onSlotFilled(slotNum);
-        else if (!wasEmpty && itemStack == null)
-            onSlotEmptied(slotNum);
+        if (wasEmpty && itemStack != null) onSlotFilled(slotNum);
+        else if (!wasEmpty && itemStack == null) onSlotEmptied(slotNum);
 
         markDirty();
     }
 
     @Override
     public String getInventoryName() {
-        if (inventoryHaver != null)
-            return inventoryHaver.getInvName(this);
-        else
-            return null;
+        if (inventoryHaver != null) return inventoryHaver.getInvName(this);
+        else return null;
     }
 
     @Override
     public boolean hasCustomInventoryName() {
-        if (inventoryHaver != null)
-            return inventoryHaver.isInvNameLocalized(this);
-        else
-            return false;
+        if (inventoryHaver != null) return inventoryHaver.isInvNameLocalized(this);
+        else return false;
     }
 
     @Override
     public int getInventoryStackLimit() {
-        if (inventoryHaver != null)
-            return inventoryHaver.getInventoryStackLimit(this);
-        else
-            return 64;
+        if (inventoryHaver != null) return inventoryHaver.getInventoryStackLimit(this);
+        else return 64;
     }
 
     @Override
     public void markDirty() {
         onInventoryChanged();
 
-        if (inventoryHaver != null)
-            inventoryHaver.onInventoryChanged(this);
+        if (inventoryHaver != null) inventoryHaver.onInventoryChanged(this);
     }
 
     @Override
@@ -166,19 +153,15 @@ public class NBTInventory implements ISaveable, IInventory {
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int slotNum, ItemStack itemStack) {
-        if (inventoryHaver != null)
-            return inventoryHaver.isItemValidForSlot(this, slotNum, itemStack);
-        else
-            return true;
+        if (inventoryHaver != null) return inventoryHaver.isItemValidForSlot(this, slotNum, itemStack);
+        else return true;
     }
 
     @Override
@@ -197,12 +180,9 @@ public class NBTInventory implements ISaveable, IInventory {
     /*
      * Inventory utility
      */
-    protected void onSlotFilled(int slotNum) {
-    }
+    protected void onSlotFilled(int slotNum) {}
 
-    protected void onSlotEmptied(int slotNum) {
-    }
+    protected void onSlotEmptied(int slotNum) {}
 
-    public void onInventoryChanged() {
-    }
+    public void onInventoryChanged() {}
 }

@@ -1,17 +1,16 @@
 package squeek.spiceoflife.foodtracker.foodgroups;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import squeek.spiceoflife.ModConfig;
 import squeek.spiceoflife.compat.PacketDispatcher;
 import squeek.spiceoflife.helpers.OreDictionaryHelper;
 import squeek.spiceoflife.network.PacketFoodGroup;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class FoodGroupRegistry {
     private static Map<String, FoodGroup> foodGroups = new HashMap<>();
@@ -20,6 +19,7 @@ public class FoodGroupRegistry {
      * See {@link #getFoodGroupsForFood(ItemStack)}
      */
     private static Map<Integer, Set<FoodGroup>> foodToIncludedFoodGroups = new HashMap<>();
+
     private static boolean hasBlacklist = false;
 
     public static FoodGroup getFoodGroup(String identifier) {
@@ -37,8 +37,7 @@ public class FoodGroupRegistry {
     public static void addFoodGroup(FoodGroup foodGroup) {
         foodGroups.put(foodGroup.identifier, foodGroup);
 
-        if (foodGroup.blacklist)
-            hasBlacklist = true;
+        if (foodGroup.blacklist) hasBlacklist = true;
     }
 
     public static boolean foodGroupExists(String identifier) {
@@ -46,8 +45,7 @@ public class FoodGroupRegistry {
     }
 
     public static boolean isFoodBlacklisted(ItemStack food) {
-        if (!hasBlacklist && !ModConfig.USE_FOOD_GROUPS_AS_WHITELISTS)
-            return false;
+        if (!hasBlacklist && !ModConfig.USE_FOOD_GROUPS_AS_WHITELISTS) return false;
 
         Set<FoodGroup> foodGroups = getFoodGroupsForFood(food);
         boolean isInAnyFoodGroups = !foodGroups.isEmpty();
@@ -56,20 +54,19 @@ public class FoodGroupRegistry {
     }
 
     public static Set<FoodGroup> getFoodGroupsForFood(ItemStack food) {
-        Set<FoodGroup> wildCardFoodGroups = foodToIncludedFoodGroups.get(OreDictionaryHelper.getWildCardItemStackHash(food));
+        Set<FoodGroup> wildCardFoodGroups =
+                foodToIncludedFoodGroups.get(OreDictionaryHelper.getWildCardItemStackHash(food));
         Set<FoodGroup> exactFoodGroups = foodToIncludedFoodGroups.get(OreDictionaryHelper.getItemStackHash(food));
         Set<FoodGroup> allFoodGroups = new HashSet<>();
 
         if (wildCardFoodGroups != null) {
             for (FoodGroup foodGroup : wildCardFoodGroups) {
-                if (!foodGroup.isFoodExcluded(food))
-                    allFoodGroups.add(foodGroup);
+                if (!foodGroup.isFoodExcluded(food)) allFoodGroups.add(foodGroup);
             }
         }
         if (exactFoodGroups != null) {
             for (FoodGroup foodGroup : exactFoodGroups) {
-                if (!foodGroup.isFoodExcluded(food))
-                    allFoodGroups.add(foodGroup);
+                if (!foodGroup.isFoodExcluded(food)) allFoodGroups.add(foodGroup);
             }
         }
 
@@ -78,8 +75,7 @@ public class FoodGroupRegistry {
 
     private static boolean isAnyFoodGroupBlacklist(Collection<FoodGroup> foodGroups) {
         for (FoodGroup foodGroup : foodGroups) {
-            if (foodGroup.blacklist)
-                return true;
+            if (foodGroup.blacklist) return true;
         }
         return false;
     }

@@ -8,16 +8,13 @@ import squeek.spiceoflife.helpers.FoodHelper;
 import squeek.spiceoflife.items.ItemFoodContainer;
 
 public class PacketToggleFoodContainer extends PacketBase {
-    public PacketToggleFoodContainer() {
-    }
+    public PacketToggleFoodContainer() {}
 
     @Override
-    public void pack(IByteIO data) {
-    }
+    public void pack(IByteIO data) {}
 
     @Override
-    public void unpack(IByteIO data) {
-    }
+    public void unpack(IByteIO data) {}
 
     @Override
     public PacketBase processAndReply(Side side, EntityPlayer player) {

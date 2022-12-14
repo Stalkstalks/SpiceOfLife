@@ -1,4 +1,3 @@
 package squeek.spiceoflife.compat;
 
-public class CompatHelper {
-}
+public class CompatHelper {}

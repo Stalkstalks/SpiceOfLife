@@ -219,12 +219,9 @@ public class ByteIONetty implements IByteIO {
 
     @Override
     public boolean equals(Object obj) {
-        if (super.equals(obj))
-            return true;
-        else if (obj instanceof ByteIONetty)
-            return buf.equals(((ByteIONetty) obj).buf);
-        else
-            return false;
+        if (super.equals(obj)) return true;
+        else if (obj instanceof ByteIONetty) return buf.equals(((ByteIONetty) obj).buf);
+        else return false;
     }
 
     @Override

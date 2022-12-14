@@ -21,5 +21,4 @@ public class OreDictionaryHelper {
     public static int getItemHash(Item item) {
         return Item.getIdFromItem(item);
     }
-
 }

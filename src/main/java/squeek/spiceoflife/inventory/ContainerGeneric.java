@@ -24,7 +24,8 @@ public abstract class ContainerGeneric extends Container {
         addSlotsOfType(slotClass, inventory, xStart, yStart, 1, 1);
     }
 
-    protected void addSlotsOfType(Class<? extends Slot> slotClass, IInventory inventory, int xStart, int yStart, int numSlots, int rows) {
+    protected void addSlotsOfType(
+            Class<? extends Slot> slotClass, IInventory inventory, int xStart, int yStart, int numSlots, int rows) {
         int numSlotsPerRow = numSlots / rows;
         for (int i = 0, col = 0, row = 0; i < numSlots; ++i, ++col) {
             if (col >= numSlotsPerRow) {
@@ -33,7 +34,9 @@ public abstract class ContainerGeneric extends Container {
             }
 
             try {
-                this.addSlotToContainer(slotClass.getConstructor(IInventory.class, int.class, int.class, int.class).newInstance(inventory, getNextSlotIndex(), xStart + col * 18, yStart + row * 18));
+                this.addSlotToContainer(slotClass
+                        .getConstructor(IInventory.class, int.class, int.class, int.class)
+                        .newInstance(inventory, getNextSlotIndex(), xStart + col * 18, yStart + row * 18));
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
@@ -51,7 +54,8 @@ public abstract class ContainerGeneric extends Container {
         addSlotsOfType(Slot.class, inventory, xStart, yStart, 1);
     }
 
-    protected void addSlotsOfType(Class<? extends Slot> slotClass, IInventory inventory, int xStart, int yStart, int rows) {
+    protected void addSlotsOfType(
+            Class<? extends Slot> slotClass, IInventory inventory, int xStart, int yStart, int rows) {
         addSlotsOfType(slotClass, inventory, xStart, yStart, inventory.getSizeInventory(), rows);
     }
 
@@ -75,7 +79,8 @@ public abstract class ContainerGeneric extends Container {
         // inventory
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
-                this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, xStart + col * 18, yStart + row * 18));
+                this.addSlotToContainer(
+                        new Slot(playerInventory, col + row * 9 + 9, xStart + col * 18, yStart + row * 18));
             }
         }
 
@@ -94,7 +99,8 @@ public abstract class ContainerGeneric extends Container {
 
             // transferring from the container to the player inventory
             if (slotNum < this.inventory.getSizeInventory()) {
-                if (!this.mergeItemStack(stackToTransfer, this.inventory.getSizeInventory(), this.inventorySlots.size(), true)) {
+                if (!this.mergeItemStack(
+                        stackToTransfer, this.inventory.getSizeInventory(), this.inventorySlots.size(), true)) {
                     return null;
                 }
             }
@@ -112,8 +118,7 @@ public abstract class ContainerGeneric extends Container {
             }
 
             // returning the remainder will attempt to fill any other valid slots with it
-            if (allowShiftClickToMultipleSlots)
-                return stackToTransfer;
+            if (allowShiftClickToMultipleSlots) return stackToTransfer;
         }
 
         // returning null stops it from attempting to fill consecutive slots with the remaining stack
@@ -134,8 +139,7 @@ public abstract class ContainerGeneric extends Container {
             Slot slot1 = (Slot) this.inventorySlots.get(slotNum);
             ItemStack stack2 = player.inventory.getStackInSlot(mouseButton);
 
-            if (stack2 != null && !slot1.isItemValid(stack2))
-                return slot1.getStack();
+            if (stack2 != null && !slot1.isItemValid(stack2)) return slot1.getStack();
         }
         return super.slotClick(slotNum, mouseButton, modifier, player);
     }
@@ -158,11 +162,16 @@ public abstract class ContainerGeneric extends Container {
         ItemStack itemstack1;
 
         if (itemStack.isStackable()) {
-            while (itemStack.stackSize > 0 && (!checkBackwards && k < endSlotNum || checkBackwards && k >= startSlotNum)) {
+            while (itemStack.stackSize > 0
+                    && (!checkBackwards && k < endSlotNum || checkBackwards && k >= startSlotNum)) {
                 slot = (Slot) this.inventorySlots.get(k);
                 itemstack1 = slot.getStack();
 
-                if (itemstack1 != null && itemstack1.getItem() == itemStack.getItem() && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemStack, itemstack1) && slot.isItemValid(itemStack)) {
+                if (itemstack1 != null
+                        && itemstack1.getItem() == itemStack.getItem()
+                        && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == itemstack1.getItemDamage())
+                        && ItemStack.areItemStackTagsEqual(itemStack, itemstack1)
+                        && slot.isItemValid(itemStack)) {
                     int l = itemstack1.stackSize + itemStack.stackSize;
                     int effectiveMaxStackSize = getEffectiveMaxStackSizeForSlot(k, itemStack);
 

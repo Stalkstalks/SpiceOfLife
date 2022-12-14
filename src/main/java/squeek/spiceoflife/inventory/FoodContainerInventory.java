@@ -38,9 +38,9 @@ public class FoodContainerInventory extends NBTInventory {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
         if (player.openContainer != null && player.openContainer instanceof ContainerFoodContainer) {
             ContainerFoodContainer openFoodContainer = (ContainerFoodContainer) player.openContainer;
-            ItemStack matchingFoodContainer = openFoodContainer.findFoodContainerWithUUID(itemFoodContainer.getUUID(itemStackFoodContainer));
-            if (matchingFoodContainer != null)
-                itemStackFoodContainer = matchingFoodContainer;
+            ItemStack matchingFoodContainer =
+                    openFoodContainer.findFoodContainerWithUUID(itemFoodContainer.getUUID(itemStackFoodContainer));
+            if (matchingFoodContainer != null) itemStackFoodContainer = matchingFoodContainer;
         }
     }
 }

@@ -15,15 +15,12 @@ public class FileHelper {
         try (InputStream sourceInput = new FileInputStream(sourceFile)) {
             copyFile(sourceInput, destFile, overwrite);
         }
-
     }
 
     public static void copyFile(InputStream sourceInput, File destFile, final boolean overwrite) throws IOException {
         if (destFile.exists()) {
-            if (overwrite)
-                assert destFile.delete();
-            else
-                return;
+            if (overwrite) assert destFile.delete();
+            else return;
         } else {
             assert destFile.createNewFile();
         }

@@ -1,11 +1,10 @@
 package squeek.spiceoflife.foodtracker;
 
+import java.util.UUID;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.UUID;
 
 public class MaxHealthHandler {
     private static final UUID SOL_HEALTH_MODIFIER_ID = UUID.fromString("f88d6ac1-4193-4ff0-85f5-f0357fe89d17");
@@ -15,7 +14,8 @@ public class MaxHealthHandler {
             return false;
         }
 
-        final IAttributeInstance attribute = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+        final IAttributeInstance attribute =
+                player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
         final AttributeModifier prevModifier = attribute.getModifier(SOL_HEALTH_MODIFIER_ID);
 
         final FoodHistory foodHistory = FoodHistory.get(player);
@@ -26,10 +26,7 @@ public class MaxHealthHandler {
         boolean hasChanged = prevModifier == null || prevModifier.getAmount() != totalHealthModifier;
 
         AttributeModifier modifier = new AttributeModifier(
-            SOL_HEALTH_MODIFIER_ID,
-            "Health gained from trying new foods",
-            totalHealthModifier,
-            0);
+                SOL_HEALTH_MODIFIER_ID, "Health gained from trying new foods", totalHealthModifier, 0);
 
         updateHealthModifier(player, modifier);
 

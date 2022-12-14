@@ -2,6 +2,7 @@ package squeek.spiceoflife.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -13,8 +14,6 @@ import squeek.spiceoflife.ModConfig;
 import squeek.spiceoflife.ModContent;
 import squeek.spiceoflife.ModInfo;
 import squeek.spiceoflife.gui.GuiScreenFoodJournal;
-
-import java.util.Locale;
 
 public class ItemFoodJournal extends Item {
 
@@ -31,7 +30,8 @@ public class ItemFoodJournal extends Item {
             ItemStack itemStack = new ItemStack(ModContent.foodJournal);
             // try add, otherwise spawn in the world
             if (!player.inventory.addItemStackToInventory(itemStack)) {
-                EntityItem entityItem = new EntityItem(player.worldObj, player.posX + 0.5f, player.posY + 0.5f, player.posZ + 0.5f, itemStack);
+                EntityItem entityItem = new EntityItem(
+                        player.worldObj, player.posX + 0.5f, player.posY + 0.5f, player.posZ + 0.5f, itemStack);
                 player.worldObj.spawnEntityInWorld(entityItem);
             }
         }
@@ -40,9 +40,7 @@ public class ItemFoodJournal extends Item {
     @SideOnly(Side.CLIENT)
     @Override
     public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-        if (world.isRemote)
-            Minecraft.getMinecraft().displayGuiScreen(new GuiScreenFoodJournal());
+        if (world.isRemote) Minecraft.getMinecraft().displayGuiScreen(new GuiScreenFoodJournal());
         return super.onItemRightClick(itemStack, world, player);
     }
-
 }

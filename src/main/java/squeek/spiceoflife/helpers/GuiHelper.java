@@ -25,7 +25,13 @@ public class GuiHelper implements IGuiHandler {
     public static boolean openGuiOfItemStack(EntityPlayer player, ItemStack itemStack) {
         if (!player.worldObj.isRemote) {
             if (itemStack.getItem() instanceof ItemFoodContainer) {
-                player.openGui(ModSpiceOfLife.instance, GuiIds.FOOD_CONTAINER.ordinal(), player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+                player.openGui(
+                        ModSpiceOfLife.instance,
+                        GuiIds.FOOD_CONTAINER.ordinal(),
+                        player.worldObj,
+                        (int) player.posX,
+                        (int) player.posY,
+                        (int) player.posZ);
                 return true;
             }
             return false;
@@ -55,12 +61,16 @@ public class GuiHelper implements IGuiHandler {
         return getSidedGuiElement(true, guiId, player, world, x, y, z);
     }
 
-    public Object getSidedGuiElement(boolean isClientSide, int guiId, EntityPlayer player, World world, int x, int y, int z) {
+    public Object getSidedGuiElement(
+            boolean isClientSide, int guiId, EntityPlayer player, World world, int x, int y, int z) {
         if (GuiIds.values()[guiId] == GuiIds.FOOD_CONTAINER) {
             ItemStack heldItem = player.getHeldItem();
             if (heldItem != null && heldItem.getItem() instanceof ItemFoodContainer) {
-                FoodContainerInventory foodContainerInventory = ((ItemFoodContainer) heldItem.getItem()).getInventory(heldItem);
-                return isClientSide ? new GuiFoodContainer(player.inventory, foodContainerInventory) : new ContainerFoodContainer(player.inventory, foodContainerInventory);
+                FoodContainerInventory foodContainerInventory =
+                        ((ItemFoodContainer) heldItem.getItem()).getInventory(heldItem);
+                return isClientSide
+                        ? new GuiFoodContainer(player.inventory, foodContainerInventory)
+                        : new ContainerFoodContainer(player.inventory, foodContainerInventory);
             }
         }
         return null;
