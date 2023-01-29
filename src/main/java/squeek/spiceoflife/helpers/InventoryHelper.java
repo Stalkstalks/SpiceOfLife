@@ -1,21 +1,24 @@
 package squeek.spiceoflife.helpers;
 
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.ReflectionHelper;
+
 public class InventoryHelper {
+
     public static final Method hopperInsertIntoInventory = ReflectionHelper.findMethod(
             TileEntityHopper.class,
             null,
-            new String[] {"func_145899_c", "c"},
+            new String[] { "func_145899_c", "c" },
             IInventory.class,
             ItemStack.class,
             int.class,
@@ -29,8 +32,8 @@ public class InventoryHelper {
         return insertStackIntoInventory(itemStack, inventory, ForgeDirection.UP);
     }
 
-    public static ItemStack insertStackIntoInventory(
-            ItemStack itemStack, IInventory inventory, ForgeDirection direction) {
+    public static ItemStack insertStackIntoInventory(ItemStack itemStack, IInventory inventory,
+            ForgeDirection direction) {
         return TileEntityHopper.func_145889_a(inventory, itemStack, direction.ordinal());
     }
 
@@ -43,14 +46,14 @@ public class InventoryHelper {
      *
      * @return The remainder
      */
-    public static ItemStack insertStackIntoInventoryOnce(
-            ItemStack itemStack, IInventory inventory, ForgeDirection direction) {
+    public static ItemStack insertStackIntoInventoryOnce(ItemStack itemStack, IInventory inventory,
+            ForgeDirection direction) {
         int originalStackSize = itemStack.stackSize;
 
         for (int l = 0; l < inventory.getSizeInventory(); ++l) {
             try {
-                itemStack = (ItemStack)
-                        hopperInsertIntoInventory.invoke(null, inventory, itemStack, l, direction.ordinal());
+                itemStack = (ItemStack) hopperInsertIntoInventory
+                        .invoke(null, inventory, itemStack, l, direction.ordinal());
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {

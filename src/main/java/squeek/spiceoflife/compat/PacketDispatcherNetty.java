@@ -1,10 +1,11 @@
 package squeek.spiceoflife.compat;
 
-import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.player.EntityPlayerMP;
+
 import squeek.spiceoflife.compat.PacketDispatcher.PacketTarget;
 import squeek.spiceoflife.network.PacketBase;
 import squeek.spiceoflife.network.PacketHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 public class PacketDispatcherNetty implements IPacketDispatcher {
 
@@ -21,7 +22,11 @@ public class PacketDispatcherNetty implements IPacketDispatcher {
     @Override
     public void sendToAllAround(PacketBase packet, PacketTarget packetTarget) {
         NetworkRegistry.TargetPoint targetPoint = new NetworkRegistry.TargetPoint(
-                packetTarget.dimension, packetTarget.x, packetTarget.y, packetTarget.z, packetTarget.range);
+                packetTarget.dimension,
+                packetTarget.x,
+                packetTarget.y,
+                packetTarget.z,
+                packetTarget.range);
         PacketHandler.channel.sendToAllAround(packet, targetPoint);
     }
 

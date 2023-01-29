@@ -3,12 +3,14 @@ package squeek.spiceoflife.helpers;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+
 import squeek.applecore.api.AppleCoreAPI;
 import squeek.applecore.api.food.FoodValues;
 import squeek.spiceoflife.foodtracker.foodgroups.FoodGroupRegistry;
 import squeek.spiceoflife.items.ItemFoodContainer;
 
 public class FoodHelper {
+
     public static boolean isValidFood(ItemStack itemStack) {
         return isFood(itemStack) && !isFoodContainer(itemStack);
     }

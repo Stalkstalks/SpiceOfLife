@@ -1,8 +1,7 @@
 package squeek.spiceoflife.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.Locale;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -10,10 +9,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import squeek.spiceoflife.ModConfig;
 import squeek.spiceoflife.ModContent;
 import squeek.spiceoflife.ModInfo;
 import squeek.spiceoflife.gui.GuiScreenFoodJournal;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFoodJournal extends Item {
 
@@ -31,7 +33,11 @@ public class ItemFoodJournal extends Item {
             // try add, otherwise spawn in the world
             if (!player.inventory.addItemStackToInventory(itemStack)) {
                 EntityItem entityItem = new EntityItem(
-                        player.worldObj, player.posX + 0.5f, player.posY + 0.5f, player.posZ + 0.5f, itemStack);
+                        player.worldObj,
+                        player.posX + 0.5f,
+                        player.posY + 0.5f,
+                        player.posZ + 0.5f,
+                        itemStack);
                 player.worldObj.spawnEntityInWorld(entityItem);
             }
         }

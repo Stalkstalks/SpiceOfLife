@@ -1,12 +1,14 @@
 package squeek.spiceoflife.compat;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 public class ByteIONetty implements IByteIO {
+
     public ByteBuf buf;
 
     public ByteIONetty() {

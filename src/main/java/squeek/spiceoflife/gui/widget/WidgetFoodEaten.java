@@ -1,16 +1,19 @@
 package squeek.spiceoflife.gui.widget;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+
 import org.lwjgl.opengl.GL11;
+
 import squeek.applecore.api.food.FoodValues;
 import squeek.spiceoflife.foodtracker.FoodEaten;
 import squeek.spiceoflife.helpers.ColorHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class WidgetFoodEaten extends Gui {
+
     public static final int PADDING_LEFT = 18;
     public static final int HUNGER_BAR_WIDTH = 9;
     public final FoodEaten foodEaten;
@@ -52,8 +55,8 @@ public class WidgetFoodEaten extends Gui {
 
         if (defaultFoodValues == null) return 0;
 
-        return (int)
-                Math.max(1, Math.ceil(Math.abs(Math.max(foodEaten.foodValues.hunger, defaultFoodValues.hunger)) / 2f));
+        return (int) Math
+                .max(1, Math.ceil(Math.abs(Math.max(foodEaten.foodValues.hunger, defaultFoodValues.hunger)) / 2f));
     }
 
     public void draw(int x, int y) {

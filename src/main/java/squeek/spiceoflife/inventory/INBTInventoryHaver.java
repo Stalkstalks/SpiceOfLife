@@ -3,6 +3,7 @@ package squeek.spiceoflife.inventory;
 import net.minecraft.item.ItemStack;
 
 public interface INBTInventoryHaver {
+
     int getSizeInventory();
 
     String getInvName(NBTInventory inventory);

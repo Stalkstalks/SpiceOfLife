@@ -1,11 +1,10 @@
 package squeek.spiceoflife.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -15,15 +14,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+
 import org.lwjgl.opengl.GL11;
+
 import squeek.spiceoflife.foodtracker.FoodEaten;
 import squeek.spiceoflife.foodtracker.FoodHistory;
 import squeek.spiceoflife.foodtracker.ProgressInfo;
 import squeek.spiceoflife.gui.widget.WidgetButtonNextPage;
 import squeek.spiceoflife.gui.widget.WidgetFoodEaten;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiScreenFoodJournal extends GuiScreen {
+
     public static final DecimalFormat dfOne = new DecimalFormat("#.#");
     protected static final int numPerPage = 5;
     private static final ResourceLocation bookGuiTextures = new ResourceLocation("textures/gui/book.png");
@@ -42,17 +46,22 @@ public class GuiScreenFoodJournal extends GuiScreen {
         super.initGui();
 
         this.buttonList.add(
-                buttonPrevPage =
-                        new WidgetButtonNextPage(1, (this.width - this.bookImageWidth) / 2 + 38, 2 + 154, false));
+                buttonPrevPage = new WidgetButtonNextPage(
+                        1,
+                        (this.width - this.bookImageWidth) / 2 + 38,
+                        2 + 154,
+                        false));
         this.buttonList.add(
-                buttonNextPage =
-                        new WidgetButtonNextPage(2, (this.width - this.bookImageWidth) / 2 + 120, 2 + 154, true));
+                buttonNextPage = new WidgetButtonNextPage(
+                        2,
+                        (this.width - this.bookImageWidth) / 2 + 120,
+                        2 + 154,
+                        true));
 
         foodEatenWidgets.clear();
         FoodHistory foodHistory = FoodHistory.get(mc.thePlayer);
         Set<FoodEaten> recent = new HashSet<>(foodHistory.getRecentHistory());
-        foodHistory.getFullHistory().stream()
-                .sorted(Comparator.comparing(i -> i.itemStack.getDisplayName()))
+        foodHistory.getFullHistory().stream().sorted(Comparator.comparing(i -> i.itemStack.getDisplayName()))
                 .forEach(f -> foodEatenWidgets.add(new WidgetFoodEaten(f, recent.contains(f))));
 
         numPages = 1 + (int) Math.ceil((float) foodEatenWidgets.size() / numPerPage);
@@ -116,15 +125,19 @@ public class GuiScreenFoodJournal extends GuiScreen {
             final int foodsUntilNextMilestone = progressInfo.foodsUntilNextMilestone();
 
             int localX = x + leftMargin;
-            int drawWidth = (bookImageWidth - rightMargin)
-                    - leftMargin; // width in which text can be drawn, so it doesn't step over the edges
+            int drawWidth = (bookImageWidth - rightMargin) - leftMargin; // width in which text can be drawn, so it
+                                                                         // doesn't step over the edges
             int localY = y + 32;
             int blackColor = 0x000000;
 
             String foodHistoryTitle = I18n.format("spiceoflife.gui.food_history.title");
             int foodTitleWidth = fontRendererObj.getStringWidth(foodHistoryTitle);
             GuiUtils.drawText(
-                    fontRendererObj, foodHistoryTitle, localX + drawWidth / 2 - foodTitleWidth / 2, localY, Color.BLUE);
+                    fontRendererObj,
+                    foodHistoryTitle,
+                    localX + drawWidth / 2 - foodTitleWidth / 2,
+                    localY,
+                    Color.BLUE);
 
             int verticalIndent = 8;
 
@@ -137,17 +150,23 @@ public class GuiScreenFoodJournal extends GuiScreen {
             drawHalfShank(localX, localY);
             String worthEaten = I18n.format("spiceoflife.gui.food_history.worth_eaten");
             List<String> list = splitWithDifWidth(
-                    worthEaten + " " + foodsEaten, widthMinusPadding - hungerOffset, widthMinusPadding);
+                    worthEaten + " " + foodsEaten,
+                    widthMinusPadding - hungerOffset,
+                    widthMinusPadding);
             for (int i = 0; i < list.size(); i++) {
                 GuiUtils.drawText(
-                        fontRendererObj, list.get(i), localX + (i == 0 ? hungerOffset : 0), localY, blackColor);
+                        fontRendererObj,
+                        list.get(i),
+                        localX + (i == 0 ? hungerOffset : 0),
+                        localY,
+                        blackColor);
                 localY += fontRendererObj.FONT_HEIGHT;
             }
 
             localY += verticalIndent;
             String bonusHearts = I18n.format("spiceoflife.gui.food_history.bonus_hearts");
-            list = GuiUtils.listFormattedStringToWidth(
-                    fontRendererObj, bonusHearts + " " + extraHearts, widthMinusPadding);
+            list = GuiUtils
+                    .listFormattedStringToWidth(fontRendererObj, bonusHearts + " " + extraHearts, widthMinusPadding);
             for (String s : list) {
                 GuiUtils.drawText(fontRendererObj, s, localX, localY, blackColor);
                 localY += fontRendererObj.FONT_HEIGHT;
@@ -157,10 +176,16 @@ public class GuiScreenFoodJournal extends GuiScreen {
             drawHalfShank(localX, localY);
             String nextHeart = I18n.format("spiceoflife.gui.food_history.next_heart");
             list = splitWithDifWidth(
-                    nextHeart + " " + foodsUntilNextMilestone, widthMinusPadding - hungerOffset, widthMinusPadding);
+                    nextHeart + " " + foodsUntilNextMilestone,
+                    widthMinusPadding - hungerOffset,
+                    widthMinusPadding);
             for (int i = 0; i < list.size(); i++) {
                 GuiUtils.drawText(
-                        fontRendererObj, list.get(i), localX + (i == 0 ? hungerOffset : 0), localY, blackColor);
+                        fontRendererObj,
+                        list.get(i),
+                        localX + (i == 0 ? hungerOffset : 0),
+                        localY,
+                        blackColor);
                 localY += fontRendererObj.FONT_HEIGHT;
             }
         } else {
@@ -171,7 +196,10 @@ public class GuiScreenFoodJournal extends GuiScreen {
                 int firstItemNum = startIndex + 1;
                 int lastItemNum = Math.min(totalNum, endIndex);
                 String pageIndicator = StatCollector.translateToLocalFormatted(
-                        "spiceoflife.gui.items.on.page", firstItemNum, lastItemNum, totalNum);
+                        "spiceoflife.gui.items.on.page",
+                        firstItemNum,
+                        lastItemNum,
+                        totalNum);
                 fontRendererObj.drawString(
                         pageIndicator,
                         x + this.bookImageWidth - this.fontRendererObj.getStringWidth(pageIndicator) - 44,
@@ -218,16 +246,18 @@ public class GuiScreenFoodJournal extends GuiScreen {
                             localY,
                             foodEatenWidget.width(),
                             16)) {
-                        List<String> toolTipStrings = new ArrayList<>();
-                        if (foodEatenWidget.eatenRecently) {
-                            toolTipStrings.add(EnumChatFormatting.DARK_PURPLE.toString() + EnumChatFormatting.ITALIC
-                                    + "Eaten Recently");
-                        } else {
-                            toolTipStrings.add(EnumChatFormatting.DARK_AQUA.toString() + EnumChatFormatting.ITALIC
-                                    + "Not Eaten Recently!");
-                        }
-                        this.drawHoveringText(toolTipStrings, mouseX, mouseY, fontRendererObj);
-                    }
+                                List<String> toolTipStrings = new ArrayList<>();
+                                if (foodEatenWidget.eatenRecently) {
+                                    toolTipStrings.add(
+                                            EnumChatFormatting.DARK_PURPLE.toString() + EnumChatFormatting.ITALIC
+                                                    + "Eaten Recently");
+                                } else {
+                                    toolTipStrings.add(
+                                            EnumChatFormatting.DARK_AQUA.toString() + EnumChatFormatting.ITALIC
+                                                    + "Not Eaten Recently!");
+                                }
+                                this.drawHoveringText(toolTipStrings, mouseX, mouseY, fontRendererObj);
+                            }
 
                     foodEatenIndex++;
                 }

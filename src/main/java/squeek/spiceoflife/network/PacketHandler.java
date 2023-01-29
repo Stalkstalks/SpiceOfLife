@@ -1,12 +1,13 @@
 package squeek.spiceoflife.network;
 
+import squeek.spiceoflife.ModInfo;
+import squeek.spiceoflife.network.simpleimpl.BetterSimpleNetworkWrapper;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
-import squeek.spiceoflife.ModInfo;
-import squeek.spiceoflife.network.simpleimpl.BetterSimpleNetworkWrapper;
 
 public class PacketHandler implements IMessageHandler<PacketBase, PacketBase> {
+
     public static final BetterSimpleNetworkWrapper channel = new BetterSimpleNetworkWrapper(ModInfo.NETCHANNEL);
 
     @Override
@@ -15,6 +16,7 @@ public class PacketHandler implements IMessageHandler<PacketBase, PacketBase> {
     }
 
     public enum PacketType {
+
         ConfigSync(PacketConfigSync.class),
         FoodHistory(PacketFoodHistory.class),
         FoodEatenAllTime(PacketFoodEatenAllTime.class),

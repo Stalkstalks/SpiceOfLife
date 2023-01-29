@@ -3,6 +3,7 @@ package squeek.spiceoflife.foodtracker.foodqueue;
 import squeek.spiceoflife.foodtracker.FoodEaten;
 
 public class FixedSizeQueue extends FoodQueue {
+
     private static final long serialVersionUID = 2666900280639735575L;
     protected int limit;
 

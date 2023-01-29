@@ -5,18 +5,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+
 import squeek.spiceoflife.ModConfig;
 import squeek.spiceoflife.compat.PacketDispatcher;
 import squeek.spiceoflife.helpers.OreDictionaryHelper;
 import squeek.spiceoflife.network.PacketFoodGroup;
 
 public class FoodGroupRegistry {
+
     private static Map<String, FoodGroup> foodGroups = new HashMap<>();
     /**
-     * Does not deal with food group exclusions; that must be handled separately
-     * See {@link #getFoodGroupsForFood(ItemStack)}
+     * Does not deal with food group exclusions; that must be handled separately See
+     * {@link #getFoodGroupsForFood(ItemStack)}
      */
     private static Map<Integer, Set<FoodGroup>> foodToIncludedFoodGroups = new HashMap<>();
 
@@ -54,8 +57,8 @@ public class FoodGroupRegistry {
     }
 
     public static Set<FoodGroup> getFoodGroupsForFood(ItemStack food) {
-        Set<FoodGroup> wildCardFoodGroups =
-                foodToIncludedFoodGroups.get(OreDictionaryHelper.getWildCardItemStackHash(food));
+        Set<FoodGroup> wildCardFoodGroups = foodToIncludedFoodGroups
+                .get(OreDictionaryHelper.getWildCardItemStackHash(food));
         Set<FoodGroup> exactFoodGroups = foodToIncludedFoodGroups.get(OreDictionaryHelper.getItemStackHash(food));
         Set<FoodGroup> allFoodGroups = new HashSet<>();
 

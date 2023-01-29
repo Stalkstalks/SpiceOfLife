@@ -8,6 +8,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public abstract class ContainerGeneric extends Container {
+
     protected IInventory inventory;
     protected int nextSlotIndex = 0;
     protected boolean allowShiftClickToMultipleSlots = false;
@@ -24,8 +25,8 @@ public abstract class ContainerGeneric extends Container {
         addSlotsOfType(slotClass, inventory, xStart, yStart, 1, 1);
     }
 
-    protected void addSlotsOfType(
-            Class<? extends Slot> slotClass, IInventory inventory, int xStart, int yStart, int numSlots, int rows) {
+    protected void addSlotsOfType(Class<? extends Slot> slotClass, IInventory inventory, int xStart, int yStart,
+            int numSlots, int rows) {
         int numSlotsPerRow = numSlots / rows;
         for (int i = 0, col = 0, row = 0; i < numSlots; ++i, ++col) {
             if (col >= numSlotsPerRow) {
@@ -34,9 +35,9 @@ public abstract class ContainerGeneric extends Container {
             }
 
             try {
-                this.addSlotToContainer(slotClass
-                        .getConstructor(IInventory.class, int.class, int.class, int.class)
-                        .newInstance(inventory, getNextSlotIndex(), xStart + col * 18, yStart + row * 18));
+                this.addSlotToContainer(
+                        slotClass.getConstructor(IInventory.class, int.class, int.class, int.class)
+                                .newInstance(inventory, getNextSlotIndex(), xStart + col * 18, yStart + row * 18));
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
@@ -54,8 +55,8 @@ public abstract class ContainerGeneric extends Container {
         addSlotsOfType(Slot.class, inventory, xStart, yStart, 1);
     }
 
-    protected void addSlotsOfType(
-            Class<? extends Slot> slotClass, IInventory inventory, int xStart, int yStart, int rows) {
+    protected void addSlotsOfType(Class<? extends Slot> slotClass, IInventory inventory, int xStart, int yStart,
+            int rows) {
         addSlotsOfType(slotClass, inventory, xStart, yStart, inventory.getSizeInventory(), rows);
     }
 
@@ -100,7 +101,10 @@ public abstract class ContainerGeneric extends Container {
             // transferring from the container to the player inventory
             if (slotNum < this.inventory.getSizeInventory()) {
                 if (!this.mergeItemStack(
-                        stackToTransfer, this.inventory.getSizeInventory(), this.inventorySlots.size(), true)) {
+                        stackToTransfer,
+                        this.inventory.getSizeInventory(),
+                        this.inventorySlots.size(),
+                        true)) {
                     return null;
                 }
             }
@@ -167,8 +171,7 @@ public abstract class ContainerGeneric extends Container {
                 slot = (Slot) this.inventorySlots.get(k);
                 itemstack1 = slot.getStack();
 
-                if (itemstack1 != null
-                        && itemstack1.getItem() == itemStack.getItem()
+                if (itemstack1 != null && itemstack1.getItem() == itemStack.getItem()
                         && (!itemStack.getHasSubtypes() || itemStack.getItemDamage() == itemstack1.getItemDamage())
                         && ItemStack.areItemStackTagsEqual(itemStack, itemstack1)
                         && slot.isItemValid(itemStack)) {

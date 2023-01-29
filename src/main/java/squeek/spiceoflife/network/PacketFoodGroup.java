@@ -1,12 +1,14 @@
 package squeek.spiceoflife.network;
 
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
+
 import squeek.spiceoflife.compat.IByteIO;
 import squeek.spiceoflife.foodtracker.foodgroups.FoodGroup;
 import squeek.spiceoflife.foodtracker.foodgroups.FoodGroupRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 public class PacketFoodGroup extends PacketBase {
+
     public static int foodGroupsRecieved = 0;
     private FoodGroup foodGroup = null;
     private int totalFoodGroups = 0;
@@ -38,9 +40,11 @@ public class PacketFoodGroup extends PacketBase {
 
     @Override
     public PacketBase processAndReply(Side side, EntityPlayer player) {
-        if (++foodGroupsRecieved > totalFoodGroups)
-            throw new RuntimeException("Recieved more food groups than should exist (recieved: " + foodGroupsRecieved
-                    + ", total: " + totalFoodGroups + ")");
+        if (++foodGroupsRecieved > totalFoodGroups) throw new RuntimeException(
+                "Recieved more food groups than should exist (recieved: " + foodGroupsRecieved
+                        + ", total: "
+                        + totalFoodGroups
+                        + ")");
 
         FoodGroupRegistry.addFoodGroup(foodGroup);
 

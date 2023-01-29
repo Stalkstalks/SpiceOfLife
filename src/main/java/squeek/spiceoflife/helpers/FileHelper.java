@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class FileHelper {
+
     public static void copyFile(File sourceFile, File destFile) throws IOException {
         copyFile(sourceFile, destFile, false);
     }

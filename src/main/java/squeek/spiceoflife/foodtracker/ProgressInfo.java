@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
  * contains all relevant variables for current progress
  */
 public final class ProgressInfo {
+
     public static final int HAUNCHES_PER_MILESTONE = 50;
     public static final int HEARTS_PER_MILESTONE = 1;
     /**
@@ -14,10 +15,8 @@ public final class ProgressInfo {
     public final int foodsHaunchesEaten;
 
     ProgressInfo(FoodHistory foodList) {
-        foodsHaunchesEaten = foodList.getFullHistory().stream()
-                .filter(eaten -> shouldCount(eaten.itemStack))
-                .mapToInt(eaten -> eaten.foodValues.hunger)
-                .sum();
+        foodsHaunchesEaten = foodList.getFullHistory().stream().filter(eaten -> shouldCount(eaten.itemStack))
+                .mapToInt(eaten -> eaten.foodValues.hunger).sum();
     }
 
     public static boolean shouldCount(ItemStack food) {

@@ -1,12 +1,14 @@
 package squeek.spiceoflife.network;
 
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
+
 import squeek.spiceoflife.compat.IByteIO;
 import squeek.spiceoflife.foodtracker.FoodEaten;
 import squeek.spiceoflife.foodtracker.FoodHistory;
+import cpw.mods.fml.relauncher.Side;
 
 public class PacketFoodHistory extends PacketBase {
+
     private FoodHistory foodHistory = null;
     private boolean shouldOverwrite = false;
 

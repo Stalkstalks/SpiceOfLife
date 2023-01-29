@@ -1,16 +1,19 @@
 package squeek.spiceoflife.helpers;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.MovingObjectPosition;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class MiscHelper {
+
     public static final int TICKS_PER_SEC = 20;
     public static final int TICKS_PER_DAY = 24000; // 20 minutes realtime
 

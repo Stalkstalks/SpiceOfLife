@@ -1,19 +1,20 @@
 package squeek.spiceoflife.helpers;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Locale;
+
 import net.minecraft.util.StatCollector;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class StringHelper {
+
     public static DecimalFormat df = new DecimalFormat("#.#");
 
     public static String getQuantityDescriptor(int quantity) {
-        return quantity == 1
-                ? StatCollector.translateToLocal("spiceoflife.quantity.one.time")
-                : (quantity == 2
-                        ? StatCollector.translateToLocalFormatted("spiceoflife.quantity.two.times", quantity)
+        return quantity == 1 ? StatCollector.translateToLocal("spiceoflife.quantity.one.time")
+                : (quantity == 2 ? StatCollector.translateToLocalFormatted("spiceoflife.quantity.two.times", quantity)
                         : StatCollector.translateToLocalFormatted("spiceoflife.quantity.x.times", quantity));
     }
 

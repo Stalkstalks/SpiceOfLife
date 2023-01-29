@@ -1,14 +1,17 @@
 package squeek.spiceoflife.gui.widget;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class WidgetButtonNextPage extends GuiButton {
+
     private static final ResourceLocation bookGui = new ResourceLocation("textures/gui/book.png");
     /**
      * True for pointing right (next page), false for pointing left (previous page).
@@ -26,8 +29,7 @@ public class WidgetButtonNextPage extends GuiButton {
     @Override
     public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
         if (this.visible) {
-            boolean flag = par2 >= this.xPosition
-                    && par3 >= this.yPosition
+            boolean flag = par2 >= this.xPosition && par3 >= this.yPosition
                     && par2 < this.xPosition + this.width
                     && par3 < this.yPosition + this.height;
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

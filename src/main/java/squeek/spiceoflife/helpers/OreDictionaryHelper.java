@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class OreDictionaryHelper {
+
     // taken from OreDictionary
     public static int getItemStackHash(ItemStack itemStack) {
         int hash = getWildCardItemStackHash(itemStack);

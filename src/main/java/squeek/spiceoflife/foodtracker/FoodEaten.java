@@ -1,9 +1,11 @@
 package squeek.spiceoflife.foodtracker;
 
 import java.util.Set;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import squeek.applecore.api.food.FoodValues;
 import squeek.spiceoflife.compat.IByteIO;
 import squeek.spiceoflife.foodtracker.foodgroups.FoodGroup;
@@ -12,6 +14,7 @@ import squeek.spiceoflife.interfaces.IPackable;
 import squeek.spiceoflife.interfaces.ISaveable;
 
 public class FoodEaten implements IPackable, ISaveable {
+
     public static final FoodValues dummyFoodValues = new FoodValues(0, 0.0f);
     public FoodValues foodValues = FoodEaten.dummyFoodValues;
     public ItemStack itemStack = null;

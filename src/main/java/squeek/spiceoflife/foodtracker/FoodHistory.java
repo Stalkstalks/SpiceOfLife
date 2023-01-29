@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.Nullable;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.IExtendedEntityProperties;
+
 import squeek.applecore.api.food.FoodValues;
 import squeek.spiceoflife.ModConfig;
 import squeek.spiceoflife.ModInfo;
@@ -26,6 +29,7 @@ import squeek.spiceoflife.interfaces.IPackable;
 import squeek.spiceoflife.interfaces.ISaveable;
 
 public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPackable {
+
     public static final String TAG_KEY = ModInfo.MODID + "History";
     public final EntityPlayer player;
     public int totalFoodsEatenAllTime = 0;
@@ -77,8 +81,7 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
         for (FoodEaten foodEaten : recentHistory) {
             if (foodEaten.itemStack == null) continue;
 
-            if (food.isItemEqual(foodEaten.itemStack)
-                    || foodEaten.getFoodGroups().contains(foodGroup)) {
+            if (food.isItemEqual(foodEaten.itemStack) || foodEaten.getFoodGroups().contains(foodGroup)) {
                 count += 1;
             }
         }
@@ -111,8 +114,8 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
     }
 
     /**
-     * Note: the returned FoodValues is not a standard FoodValues.
-     * The saturationModifier is set to the total, not to a modifier
+     * Note: the returned FoodValues is not a standard FoodValues. The saturationModifier is set to the total, not to a
+     * modifier
      */
     public FoodValues getTotalFoodValuesForFoodGroup(ItemStack food, FoodGroup foodGroup) {
         int totalHunger = 0;
@@ -121,8 +124,7 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
         for (FoodEaten foodEaten : recentHistory) {
             if (foodEaten.itemStack == null) continue;
 
-            if (food.isItemEqual(foodEaten.itemStack)
-                    || foodEaten.getFoodGroups().contains(foodGroup)) {
+            if (food.isItemEqual(foodEaten.itemStack) || foodEaten.getFoodGroups().contains(foodGroup)) {
                 totalHunger += foodEaten.foodValues.hunger;
                 totalSaturation += foodEaten.foodValues.getSaturationIncrement();
             }

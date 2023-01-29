@@ -1,19 +1,21 @@
 package squeek.spiceoflife.helpers;
 
-import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
 import squeek.spiceoflife.ModSpiceOfLife;
 import squeek.spiceoflife.gui.GuiFoodContainer;
 import squeek.spiceoflife.inventory.ContainerFoodContainer;
 import squeek.spiceoflife.inventory.FoodContainerInventory;
 import squeek.spiceoflife.items.ItemFoodContainer;
+import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 public class GuiHelper implements IGuiHandler {
+
     public static final int NINE_SLOT_WIDTH = 162;
     public static final int STANDARD_GUI_WIDTH = 176;
     public static final int STANDARD_SLOT_WIDTH = 18;
@@ -61,15 +63,14 @@ public class GuiHelper implements IGuiHandler {
         return getSidedGuiElement(true, guiId, player, world, x, y, z);
     }
 
-    public Object getSidedGuiElement(
-            boolean isClientSide, int guiId, EntityPlayer player, World world, int x, int y, int z) {
+    public Object getSidedGuiElement(boolean isClientSide, int guiId, EntityPlayer player, World world, int x, int y,
+            int z) {
         if (GuiIds.values()[guiId] == GuiIds.FOOD_CONTAINER) {
             ItemStack heldItem = player.getHeldItem();
             if (heldItem != null && heldItem.getItem() instanceof ItemFoodContainer) {
-                FoodContainerInventory foodContainerInventory =
-                        ((ItemFoodContainer) heldItem.getItem()).getInventory(heldItem);
-                return isClientSide
-                        ? new GuiFoodContainer(player.inventory, foodContainerInventory)
+                FoodContainerInventory foodContainerInventory = ((ItemFoodContainer) heldItem.getItem())
+                        .getInventory(heldItem);
+                return isClientSide ? new GuiFoodContainer(player.inventory, foodContainerInventory)
                         : new ContainerFoodContainer(player.inventory, foodContainerInventory);
             }
         }

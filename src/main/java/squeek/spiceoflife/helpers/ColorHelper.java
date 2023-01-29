@@ -3,19 +3,13 @@ package squeek.spiceoflife.helpers;
 import net.minecraft.util.EnumChatFormatting;
 
 public class ColorHelper {
-    private static final EnumChatFormatting[] colorRange = {
-        EnumChatFormatting.DARK_RED,
-        EnumChatFormatting.RED,
-        EnumChatFormatting.GOLD,
-        EnumChatFormatting.YELLOW,
-        EnumChatFormatting.DARK_GREEN,
-        EnumChatFormatting.GREEN,
-        EnumChatFormatting.AQUA
-    };
 
-    private static final EnumChatFormatting[] booleanColorRange = {
-        EnumChatFormatting.DARK_RED, EnumChatFormatting.RED, EnumChatFormatting.DARK_GREEN, EnumChatFormatting.GREEN
-    };
+    private static final EnumChatFormatting[] colorRange = { EnumChatFormatting.DARK_RED, EnumChatFormatting.RED,
+            EnumChatFormatting.GOLD, EnumChatFormatting.YELLOW, EnumChatFormatting.DARK_GREEN, EnumChatFormatting.GREEN,
+            EnumChatFormatting.AQUA };
+
+    private static final EnumChatFormatting[] booleanColorRange = { EnumChatFormatting.DARK_RED, EnumChatFormatting.RED,
+            EnumChatFormatting.DARK_GREEN, EnumChatFormatting.GREEN };
 
     public static String getRelativeColor(double val, double min, double max) {
         if (min == max) return EnumChatFormatting.RESET.toString();
@@ -37,13 +31,10 @@ public class ColorHelper {
         full = max - min;
         f1 = (max - val) / full;
         f2 = (val - min) / full;
-        int[] minColor = new int[] {150, 0, 0};
-        int[] maxColor = new int[] {0, 100, 0};
-        int[] color = new int[] {
-            (int) (maxColor[0] * f2 + minColor[0] * f1),
-            (int) (maxColor[1] * f2 + minColor[1] * f1),
-            (int) (maxColor[2] * f2 + minColor[2] * f1)
-        };
+        int[] minColor = new int[] { 150, 0, 0 };
+        int[] maxColor = new int[] { 0, 100, 0 };
+        int[] color = new int[] { (int) (maxColor[0] * f2 + minColor[0] * f1),
+                (int) (maxColor[1] * f2 + minColor[1] * f1), (int) (maxColor[2] * f2 + minColor[2] * f1) };
         return fromRGBA(color[0], color[1], color[2], 255);
     }
 

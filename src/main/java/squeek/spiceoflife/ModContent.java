@@ -1,13 +1,15 @@
 package squeek.spiceoflife;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+
 import squeek.spiceoflife.items.ItemFoodContainer;
 import squeek.spiceoflife.items.ItemFoodJournal;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModContent {
+
     public static ItemFoodJournal foodJournal;
     public static ItemFoodContainer lunchBox;
     public static ItemFoodContainer lunchBag;
@@ -24,10 +26,14 @@ public class ModContent {
     }
 
     public static void registerRecipes() {
-        GameRegistry.addShapelessRecipe(
-                new ItemStack(foodJournal), new ItemStack(Items.wheat), new ItemStack(Items.paper));
+        GameRegistry
+                .addShapelessRecipe(new ItemStack(foodJournal), new ItemStack(Items.wheat), new ItemStack(Items.paper));
         GameRegistry.addShapedRecipe(
-                new ItemStack(lunchBox), "_ _", " _ ", '_', new ItemStack(Blocks.heavy_weighted_pressure_plate));
+                new ItemStack(lunchBox),
+                "_ _",
+                " _ ",
+                '_',
+                new ItemStack(Blocks.heavy_weighted_pressure_plate));
         GameRegistry.addShapedRecipe(new ItemStack(lunchBag), "p p", " p ", 'p', new ItemStack(Items.paper));
     }
 }

@@ -1,14 +1,16 @@
 package squeek.spiceoflife.inventory;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
+import squeek.spiceoflife.items.ItemFoodContainer;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import squeek.spiceoflife.items.ItemFoodContainer;
 
 public class FoodContainerInventory extends NBTInventory {
+
     protected ItemFoodContainer itemFoodContainer;
     protected ItemStack itemStackFoodContainer;
 
@@ -38,8 +40,8 @@ public class FoodContainerInventory extends NBTInventory {
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
         if (player.openContainer != null && player.openContainer instanceof ContainerFoodContainer) {
             ContainerFoodContainer openFoodContainer = (ContainerFoodContainer) player.openContainer;
-            ItemStack matchingFoodContainer =
-                    openFoodContainer.findFoodContainerWithUUID(itemFoodContainer.getUUID(itemStackFoodContainer));
+            ItemStack matchingFoodContainer = openFoodContainer
+                    .findFoodContainerWithUUID(itemFoodContainer.getUUID(itemStackFoodContainer));
             if (matchingFoodContainer != null) itemStackFoodContainer = matchingFoodContainer;
         }
     }

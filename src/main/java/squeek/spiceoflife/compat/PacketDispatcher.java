@@ -1,12 +1,14 @@
 package squeek.spiceoflife.compat;
 
 public class PacketDispatcher {
+
     public static IPacketDispatcher get() {
         return new PacketDispatcherNetty();
     }
 
     // based on FML's NetworkRegistry.TargetPoint
     public static class PacketTarget {
+
         public final double x;
         public final double y;
         public final double z;

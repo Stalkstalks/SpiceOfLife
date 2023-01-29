@@ -1,14 +1,17 @@
 package squeek.spiceoflife.inventory;
 
 import java.util.UUID;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import squeek.spiceoflife.helpers.GuiHelper;
 import squeek.spiceoflife.items.ItemFoodContainer;
 
 public class ContainerFoodContainer extends ContainerGeneric {
+
     public int slotsX;
     public int slotsY;
     protected FoodContainerInventory foodContainerInventory;
@@ -65,8 +68,7 @@ public class ContainerFoodContainer extends ContainerGeneric {
     }
 
     public boolean isFoodContainerWithUUID(ItemStack itemStack, UUID uuid) {
-        return itemStack != null
-                && itemStack.getItem() instanceof ItemFoodContainer
+        return itemStack != null && itemStack.getItem() instanceof ItemFoodContainer
                 && ((ItemFoodContainer) itemStack.getItem()).getUUID(itemStack).equals(uuid);
     }
 
@@ -82,11 +84,10 @@ public class ContainerFoodContainer extends ContainerGeneric {
 
         if (isFoodContainerWithUUID(pickedUpStack, getUUID())) {
             setFoodContainerItemStack(pickedUpStack);
-        } else if (slotNum >= 0
-                && isFoodContainerWithUUID(putDownStack, getUUID())
+        } else if (slotNum >= 0 && isFoodContainerWithUUID(putDownStack, getUUID())
                 && isFoodContainerWithUUID(getSlot(slotNum).getStack(), getUUID())) {
-            setFoodContainerItemStack(getSlot(slotNum).getStack());
-        }
+                    setFoodContainerItemStack(getSlot(slotNum).getStack());
+                }
 
         return pickedUpStack;
     }

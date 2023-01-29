@@ -6,9 +6,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
+
 import squeek.spiceoflife.interfaces.ISaveable;
 
 public class NBTInventory implements ISaveable, IInventory {
+
     protected ItemStack[] inventoryItems;
     protected INBTInventoryHaver inventoryHaver = null;
 

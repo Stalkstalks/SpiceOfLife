@@ -2,12 +2,15 @@ package squeek.spiceoflife.foodtracker.foodgroups;
 
 import java.util.Collections;
 import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
 import squeek.spiceoflife.compat.IByteIO;
 import squeek.spiceoflife.interfaces.IPackable;
 
 public class FoodGroupMember implements IPackable {
+
     String oredictName = null;
     ItemStack itemStack = null;
 

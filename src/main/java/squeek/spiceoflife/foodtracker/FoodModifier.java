@@ -1,12 +1,11 @@
 package squeek.spiceoflife.foodtracker;
 
-import com.udojava.evalex.Expression;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import java.math.BigDecimal;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
+
 import squeek.applecore.api.AppleCoreAPI;
 import squeek.applecore.api.food.FoodEvent;
 import squeek.applecore.api.food.FoodValues;
@@ -16,7 +15,13 @@ import squeek.spiceoflife.foodtracker.foodgroups.FoodGroupRegistry;
 import squeek.spiceoflife.helpers.FoodHelper;
 import squeek.spiceoflife.items.ItemFoodContainer;
 
+import com.udojava.evalex.Expression;
+
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 public class FoodModifier {
+
     public static final FoodModifier GLOBAL = new FoodModifier();
     public Expression expression;
 
@@ -41,8 +46,8 @@ public class FoodModifier {
         if (ModConfig.FOOD_MODIFIER_ENABLED) {
             ItemStack actualFood = event.food;
             if (FoodHelper.isFoodContainer(event.food)) {
-                actualFood =
-                        ((ItemFoodContainer) event.food.getItem()).getBestFoodForPlayerToEat(event.food, event.player);
+                actualFood = ((ItemFoodContainer) event.food.getItem())
+                        .getBestFoodForPlayerToEat(event.food, event.player);
             }
 
             if (actualFood != null) {
@@ -107,32 +112,20 @@ public class FoodModifier {
         FoodValues foodValues = FoodValues.get(food);
 
         if (foodValues != null) {
-            BigDecimal result = effectiveFoodModifier
-                    .expression
-                    .with("count", new BigDecimal(count))
+            BigDecimal result = effectiveFoodModifier.expression.with("count", new BigDecimal(count))
                     .and("cur_history_length", new BigDecimal(historySize))
                     .and("food_hunger_value", new BigDecimal(foodValues.hunger))
                     .and("food_saturation_mod", new BigDecimal(foodValues.saturationModifier))
-                    .and(
-                            "cur_hunger",
-                            new BigDecimal(foodHistory.player.getFoodStats().getFoodLevel()))
-                    .and(
-                            "cur_saturation",
-                            new BigDecimal(foodHistory.player.getFoodStats().getSaturationLevel()))
+                    .and("cur_hunger", new BigDecimal(foodHistory.player.getFoodStats().getFoodLevel()))
+                    .and("cur_saturation", new BigDecimal(foodHistory.player.getFoodStats().getSaturationLevel()))
                     .and("total_food_eaten", new BigDecimal(foodHistory.totalFoodsEatenAllTime))
                     .and("max_history_length", new BigDecimal(ModConfig.FOOD_HISTORY_LENGTH))
                     .and("hunger_count", new BigDecimal(totalFoodValues.hunger))
                     .and("saturation_count", new BigDecimal(totalFoodValues.saturationModifier))
-                    .and(
-                            "food_group_count",
-                            new BigDecimal(
-                                    FoodGroupRegistry.getFoodGroupsForFood(food).size()))
-                    .and(
-                            "distinct_food_groups_eaten",
-                            new BigDecimal(foodHistory.getDistinctFoodGroups().size()))
+                    .and("food_group_count", new BigDecimal(FoodGroupRegistry.getFoodGroupsForFood(food).size()))
+                    .and("distinct_food_groups_eaten", new BigDecimal(foodHistory.getDistinctFoodGroups().size()))
                     .and("total_food_groups", new BigDecimal(FoodGroupRegistry.numFoodGroups()))
-                    .and("exact_count", new BigDecimal(foodHistory.getFoodCountIgnoringFoodGroups(food)))
-                    .eval();
+                    .and("exact_count", new BigDecimal(foodHistory.getFoodCountIgnoringFoodGroups(food))).eval();
 
             return result.floatValue();
         }

@@ -5,17 +5,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
 import squeek.applecore.api.food.FoodValues;
 import squeek.spiceoflife.foodtracker.FoodModifier;
 
 public class MealPrioritizationHelper {
-    public static final Comparator<InventoryFoodInfo> hungerComparator =
-            (a, b) -> integerCompare(a.modifiedFoodValues.hunger, b.modifiedFoodValues.hunger);
-    public static final Comparator<InventoryFoodInfo> diminishedComparator =
-            (a, b) -> Float.compare(b.diminishingReturnsModifier, a.diminishingReturnsModifier);
+
+    public static final Comparator<InventoryFoodInfo> hungerComparator = (a,
+            b) -> integerCompare(a.modifiedFoodValues.hunger, b.modifiedFoodValues.hunger);
+    public static final Comparator<InventoryFoodInfo> diminishedComparator = (a, b) -> Float
+            .compare(b.diminishingReturnsModifier, a.diminishingReturnsModifier);
 
     public static int findBestFoodForPlayerToEat(EntityPlayer player, IInventory inventory) {
         List<InventoryFoodInfo> allFoodInfo = getFoodInfoFromInventoryForPlayer(player, inventory);
@@ -42,15 +45,15 @@ public class MealPrioritizationHelper {
         return foodInfo;
     }
 
-    public static List<InventoryFoodInfo> findBestFoodsForPlayerAccountingForVariety(
-            EntityPlayer player, IInventory inventory, int limit) {
+    public static List<InventoryFoodInfo> findBestFoodsForPlayerAccountingForVariety(EntityPlayer player,
+            IInventory inventory, int limit) {
         List<InventoryFoodInfo> bestFoods = findBestFoodsForPlayerAccountingForVariety(player, inventory);
         if (bestFoods.size() > limit) bestFoods = bestFoods.subList(0, limit);
         return bestFoods;
     }
 
-    public static List<InventoryFoodInfo> findBestFoodsForPlayerAccountingForVariety(
-            EntityPlayer player, IInventory inventory) {
+    public static List<InventoryFoodInfo> findBestFoodsForPlayerAccountingForVariety(EntityPlayer player,
+            IInventory inventory) {
         List<InventoryFoodInfo> allFoodInfo = getFoodInfoFromInventoryForPlayer(player, inventory);
         Collections.shuffle(allFoodInfo);
         allFoodInfo.sort(diminishedComparator);
@@ -81,6 +84,7 @@ public class MealPrioritizationHelper {
     }
 
     public static class InventoryFoodInfo {
+
         public ItemStack itemStack;
         public FoodValues defaultFoodValues;
         public float diminishingReturnsModifier = 1;
@@ -95,8 +99,8 @@ public class MealPrioritizationHelper {
             this.defaultFoodValues = FoodValues.get(this.itemStack);
             if (FoodHelper.canFoodDiminish(this.itemStack)) {
                 this.diminishingReturnsModifier = FoodModifier.getFoodModifier(player, itemStack);
-                this.modifiedFoodValues =
-                        FoodModifier.getModifiedFoodValues(defaultFoodValues, diminishingReturnsModifier);
+                this.modifiedFoodValues = FoodModifier
+                        .getModifiedFoodValues(defaultFoodValues, diminishingReturnsModifier);
             } else {
                 this.diminishingReturnsModifier = Float.NaN;
                 this.modifiedFoodValues = defaultFoodValues;
@@ -105,6 +109,7 @@ public class MealPrioritizationHelper {
     }
 
     public static class FoodInfoComparator implements Comparator<InventoryFoodInfo>, Serializable {
+
         private static final long serialVersionUID = -2142369827782900207L;
         public int maxHungerRestored;
         public boolean ignoreHungerRemainder = false;
@@ -132,10 +137,9 @@ public class MealPrioritizationHelper {
                 }
             }
             // better food over worse food
-            if (compareResult == 0)
-                compareResult = Float.compare(
-                        b.modifiedFoodValues.saturationModifier * b.modifiedFoodValues.hunger,
-                        a.modifiedFoodValues.saturationModifier * a.modifiedFoodValues.hunger);
+            if (compareResult == 0) compareResult = Float.compare(
+                    b.modifiedFoodValues.saturationModifier * b.modifiedFoodValues.hunger,
+                    a.modifiedFoodValues.saturationModifier * a.modifiedFoodValues.hunger);
 
             return compareResult;
         }

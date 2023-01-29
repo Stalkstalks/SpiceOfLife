@@ -1,11 +1,13 @@
 package squeek.spiceoflife.network;
 
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
+
 import squeek.spiceoflife.ModConfig;
 import squeek.spiceoflife.compat.IByteIO;
+import cpw.mods.fml.relauncher.Side;
 
 public class PacketConfigSync extends PacketBase {
+
     public PacketConfigSync() {}
 
     @Override

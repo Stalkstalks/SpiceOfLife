@@ -3,6 +3,7 @@ package squeek.spiceoflife.compat;
 import io.netty.buffer.ByteBuf;
 
 public class ByteIO {
+
     public static IByteIO get() {
         return new ByteIONetty();
     }

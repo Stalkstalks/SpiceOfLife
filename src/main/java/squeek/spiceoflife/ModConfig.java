@@ -1,14 +1,13 @@
 package squeek.spiceoflife;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.io.File;
 import java.util.Locale;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
 import squeek.spiceoflife.compat.IByteIO;
 import squeek.spiceoflife.compat.PacketDispatcher;
 import squeek.spiceoflife.foodtracker.FoodHistory;
@@ -19,8 +18,12 @@ import squeek.spiceoflife.interfaces.IPackable;
 import squeek.spiceoflife.interfaces.IPacketProcessor;
 import squeek.spiceoflife.network.PacketBase;
 import squeek.spiceoflife.network.PacketConfigSync;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ModConfig implements IPackable, IPacketProcessor {
+
     public static final ModConfig instance = new ModConfig();
     public static final String ITEM_FOOD_JOURNAL_NAME = "bookfoodjournal";
     public static final String ITEM_LUNCH_BOX_NAME = "lunchbox";
@@ -34,8 +37,7 @@ public class ModConfig implements IPackable, IPacketProcessor {
     private static final String CATEGORY_MAIN_COMMENT = COMMENT_SERVER_SIDE_OPTIONS;
     private static final String FOOD_MODIFIER_ENABLED_NAME = "food.modifier.enabled";
     private static final boolean FOOD_MODIFIER_ENABLED_DEFAULT = true;
-    private static final String FOOD_MODIFIER_ENABLED_COMMENT =
-            "If false, disables the entire diminishing returns part of the mod";
+    private static final String FOOD_MODIFIER_ENABLED_COMMENT = "If false, disables the entire diminishing returns part of the mod";
     /*
      * DEV
      */
@@ -43,8 +45,7 @@ public class ModConfig implements IPackable, IPacketProcessor {
     private static final String CATEGORY_DEV_COMMENT = "These config settings are only for developers";
     private static final String DEV_LOGGING_ENABLED_NAME = "dev.logging.enabled";
     private static final boolean DEV_LOGGING_ENABLED_DEFAULT = false;
-    private static final String DEV_LOGGING_ENABLED_COMMENT =
-            "If true, enables extra logging to help modpack developers";
+    private static final String DEV_LOGGING_ENABLED_COMMENT = "If true, enables extra logging to help modpack developers";
     public static boolean DEV_LOGGING_ENABLED = ModConfig.DEV_LOGGING_ENABLED_DEFAULT;
     /*
      * SERVER
@@ -53,74 +54,74 @@ public class ModConfig implements IPackable, IPacketProcessor {
     private static final String CATEGORY_SERVER_COMMENT = COMMENT_SERVER_SIDE_OPTIONS;
     private static final String FOOD_HISTORY_LENGTH_NAME = "food.history.length";
     private static final int FOOD_HISTORY_LENGTH_DEFAULT = 12;
-    private static final String FOOD_HISTORY_LENGTH_COMMENT =
-            "The maximum amount of eaten foods stored in the history at a time";
+    private static final String FOOD_HISTORY_LENGTH_COMMENT = "The maximum amount of eaten foods stored in the history at a time";
     private static final String FOOD_HISTORY_PERSISTS_THROUGH_DEATH_NAME = "food.history.persists.through.death";
     private static final boolean FOOD_HISTORY_PERSISTS_THROUGH_DEATH_DEFAULT = false;
-    private static final String FOOD_HISTORY_PERSISTS_THROUGH_DEATH_COMMENT =
-            "If true, food history will not get reset after every death";
+    private static final String FOOD_HISTORY_PERSISTS_THROUGH_DEATH_COMMENT = "If true, food history will not get reset after every death";
     private static final String FOOD_EATEN_THRESHOLD_NAME = "new.player.food.eaten.threshold";
-    private static final String FOOD_EATEN_THRESHOLD_COMMENT =
-            "The number of times a new player (by World) needs to eat before this mod has any effect";
+    private static final String FOOD_EATEN_THRESHOLD_COMMENT = "The number of times a new player (by World) needs to eat before this mod has any effect";
     private static final String USE_FOOD_GROUPS_AS_WHITELISTS_NAME = "use.food.groups.as.whitelists";
     private static final boolean USE_FOOD_GROUPS_AS_WHITELISTS_DEFAULT = false;
-    private static final String USE_FOOD_GROUPS_AS_WHITELISTS_COMMENT =
-            "If true, any foods not in a food group will be excluded from diminishing returns";
+    private static final String USE_FOOD_GROUPS_AS_WHITELISTS_COMMENT = "If true, any foods not in a food group will be excluded from diminishing returns";
     private static final String FOOD_HUNGER_ROUNDING_MODE_NAME = "food.hunger.rounding.mode";
     private static final String FOOD_HUNGER_ROUNDING_MODE_DEFAULT = "round";
-    private static final String FOOD_HUNGER_ROUNDING_MODE_COMMENT =
-            "Rounding mode used on the hunger value of foods\n" + "Valid options: 'round', 'floor', 'ceiling'";
+    private static final String FOOD_HUNGER_ROUNDING_MODE_COMMENT = "Rounding mode used on the hunger value of foods\n"
+            + "Valid options: 'round', 'floor', 'ceiling'";
     private static final String AFFECT_FOOD_HUNGER_VALUES_NAME = "affect.food.hunger.values";
     private static final boolean AFFECT_FOOD_HUNGER_VALUES_DEFAULT = true;
     private static final String AFFECT_NEGATIVE_FOOD_HUNGER_VALUES_NAME = "affect.negative.food.hunger.values";
     private static final boolean AFFECT_NEGATIVE_FOOD_HUNGER_VALUES_DEFAULT = false;
-    private static final String AFFECT_NEGATIVE_FOOD_HUNGER_VALUES_COMMENT =
-            "If true, foods with negative hunger values will be made more negative as nutritional value decreases\n"
-                    + "NOTE: " + AFFECT_FOOD_HUNGER_VALUES_NAME + " must be true for this to have any affect";
+    private static final String AFFECT_NEGATIVE_FOOD_HUNGER_VALUES_COMMENT = "If true, foods with negative hunger values will be made more negative as nutritional value decreases\n"
+            + "NOTE: "
+            + AFFECT_FOOD_HUNGER_VALUES_NAME
+            + " must be true for this to have any affect";
     private static final String AFFECT_FOOD_SATURATION_MODIFIERS_NAME = "affect.food.saturation.modifiers";
-    private static final String AFFECT_FOOD_HUNGER_VALUES_COMMENT =
-            "If true, foods' hunger value will be multiplied by the current nutritional value\n"
-                    + "Setting this to false and " + ModConfig.AFFECT_FOOD_SATURATION_MODIFIERS_NAME
-                    + " to true will make diminishing returns affect saturation only";
+    private static final String AFFECT_FOOD_HUNGER_VALUES_COMMENT = "If true, foods' hunger value will be multiplied by the current nutritional value\n"
+            + "Setting this to false and "
+            + ModConfig.AFFECT_FOOD_SATURATION_MODIFIERS_NAME
+            + " to true will make diminishing returns affect saturation only";
     private static final boolean AFFECT_FOOD_SATURATION_MODIFIERS_DEFAULT = false;
-    private static final String AFFECT_FOOD_SATURATION_MODIFIERS_COMMENT =
-            "If true, foods' saturation modifier will be multiplied by the current nutritional value\n"
-                    + "NOTE: When " + ModConfig.AFFECT_FOOD_HUNGER_VALUES_NAME
-                    + " is true, saturation bonuses of foods will automatically decrease as the hunger value of the food decreases\n"
-                    + "Setting this to true when " + ModConfig.AFFECT_FOOD_HUNGER_VALUES_NAME
-                    + " is true will make saturation bonuses decrease disproportionately more than hunger values\n"
-                    + "Setting this to true and " + ModConfig.AFFECT_FOOD_HUNGER_VALUES_NAME
-                    + " to false will make diminishing returns affect saturation only";
-    private static final String AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_NAME =
-            "affect.negative.food.saturation.modifiers";
+    private static final String AFFECT_FOOD_SATURATION_MODIFIERS_COMMENT = "If true, foods' saturation modifier will be multiplied by the current nutritional value\n"
+            + "NOTE: When "
+            + ModConfig.AFFECT_FOOD_HUNGER_VALUES_NAME
+            + " is true, saturation bonuses of foods will automatically decrease as the hunger value of the food decreases\n"
+            + "Setting this to true when "
+            + ModConfig.AFFECT_FOOD_HUNGER_VALUES_NAME
+            + " is true will make saturation bonuses decrease disproportionately more than hunger values\n"
+            + "Setting this to true and "
+            + ModConfig.AFFECT_FOOD_HUNGER_VALUES_NAME
+            + " to false will make diminishing returns affect saturation only";
+    private static final String AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_NAME = "affect.negative.food.saturation.modifiers";
     private static final boolean AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_DEFAULT = false;
-    private static final String AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_COMMENT =
-            "If true, foods with negative saturation modifiers will be made more negative as nutritional value decreases\n"
-                    + "NOTE: " + AFFECT_FOOD_SATURATION_MODIFIERS_NAME + " must be true for this to have any affect";
+    private static final String AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_COMMENT = "If true, foods with negative saturation modifiers will be made more negative as nutritional value decreases\n"
+            + "NOTE: "
+            + AFFECT_FOOD_SATURATION_MODIFIERS_NAME
+            + " must be true for this to have any affect";
     private static final String FOOD_EATING_SPEED_MODIFIER_NAME = "food.eating.speed.modifier";
     private static final float FOOD_EATING_SPEED_MODIFIER_DEFAULT = 1;
-    private static final String FOOD_EATING_SPEED_MODIFIER_COMMENT =
-            "If set to greater than zero, food eating speed will be affected by nutritional value\n"
-                    + "(meaning the lower the nutrtional value, the longer it will take to eat it)\n"
-                    + "Eating duration is calcualted using the formula (eating_duration / (nutritional_value^eating_speed_modifier))";
+    private static final String FOOD_EATING_SPEED_MODIFIER_COMMENT = "If set to greater than zero, food eating speed will be affected by nutritional value\n"
+            + "(meaning the lower the nutrtional value, the longer it will take to eat it)\n"
+            + "Eating duration is calcualted using the formula (eating_duration / (nutritional_value^eating_speed_modifier))";
     private static final String FOOD_EATING_DURATION_MAX_NAME = "food.eating.duration.max";
     private static final int FOOD_EATING_DURATION_MAX_DEFAULT = 0;
-    private static final String FOOD_EATING_DURATION_MAX_COMMENT =
-            "The maximum time it takes to eat a food after being modified by "
-                    + ModConfig.FOOD_EATING_SPEED_MODIFIER_NAME + "\n"
-                    + "The default eating duration is 32. Set this to 0 to remove the limit on eating speed.\n"
-                    + "Note: If this is set to 0 and " + ModConfig.FOOD_EATING_SPEED_MODIFIER_NAME
-                    + " is > 0, a food with 0% nutrtional value will take nearly infinite time to eat";
+    private static final String FOOD_EATING_DURATION_MAX_COMMENT = "The maximum time it takes to eat a food after being modified by "
+            + ModConfig.FOOD_EATING_SPEED_MODIFIER_NAME
+            + "\n"
+            + "The default eating duration is 32. Set this to 0 to remove the limit on eating speed.\n"
+            + "Note: If this is set to 0 and "
+            + ModConfig.FOOD_EATING_SPEED_MODIFIER_NAME
+            + " is > 0, a food with 0% nutrtional value will take nearly infinite time to eat";
     private static final String FOOD_MODIFIER_FORMULA_STRING_NAME = "food.modifier.formula";
-    private static final String FOOD_MODIFIER_FORMULA_STRING_DEFAULT =
-            "MAX(0, (1 - count/12))^MIN(8, food_hunger_value)";
+    private static final String FOOD_MODIFIER_FORMULA_STRING_DEFAULT = "MAX(0, (1 - count/12))^MIN(8, food_hunger_value)";
     private static final String FOOD_MODIFIER_FORMULA_STRING_COMMENT = "Uses the EvalEx expression parser\n"
             + "See: https://github.com/uklimaschewski/EvalEx for syntax/function documentation\n\n"
             + "Available variables:\n"
             + "\tcount : The number of times the food (or its food group) has been eaten within the food history\n"
             + "\thunger_count : The total amount of hunger that the food (or its food group) has restored within the food history (1 hunger unit = 1/2 hunger bar)\n"
             + "\tsaturation_count : The total amount of saturation that the food (or its food group) has restored within the food history (1 saturation unit = 1/2 saturation bar)\n"
-            + "\tmax_history_length : The maximum length of the food history (see " + FOOD_HISTORY_LENGTH_NAME + ")\n"
+            + "\tmax_history_length : The maximum length of the food history (see "
+            + FOOD_HISTORY_LENGTH_NAME
+            + ")\n"
             + "\tcur_history_length : The current length of the food history (<= max_history_length)\n"
             + "\tfood_hunger_value : The default amount of hunger the food would restore in hunger units (1 hunger unit = 1/2 hunger bar)\n"
             + "\tfood_saturation_mod : The default saturation modifier of the food\n"
@@ -133,12 +134,10 @@ public class ModConfig implements IPackable, IPacketProcessor {
             + "\texact_count : The number of times the food (ignoring food groups) has been eaten within the food history\n";
     private static final String GIVE_FOOD_JOURNAL_ON_START_NAME = "give.food.journal.as.starting.item";
     private static final boolean GIVE_FOOD_JOURNAL_ON_START_DEFAULT = false;
-    private static final String GIVE_FOOD_JOURNAL_ON_START_COMMENT =
-            "If true, a food journal will be given to each player as a starting item";
+    private static final String GIVE_FOOD_JOURNAL_ON_START_COMMENT = "If true, a food journal will be given to each player as a starting item";
     private static final String FOOD_CONTAINERS_MAX_STACKSIZE_NAME = "food.containers.max.stacksize";
     private static final int FOOD_CONTAINERS_MAX_STACKSIZE_DEFAULT = 2;
-    private static final String FOOD_CONTAINERS_MAX_STACKSIZE_COMMENT =
-            "The maximum stacksize per slot in a food container";
+    private static final String FOOD_CONTAINERS_MAX_STACKSIZE_COMMENT = "The maximum stacksize per slot in a food container";
     /*
      * CLIENT
      */
@@ -146,17 +145,15 @@ public class ModConfig implements IPackable, IPacketProcessor {
     private static final String CATEGORY_CLIENT_COMMENT = "These config settings are client-side only";
     private static final String LEFT_CLICK_OPENS_FOOD_CONTAINERS_NAME = "left.click.opens.food.containers";
     private static final boolean LEFT_CLICK_OPENS_FOOD_CONTAINERS_DEFAULT = false;
-    private static final String LEFT_CLICK_OPENS_FOOD_CONTAINERS_COMMENT =
-            "If true, left clicking the air while holding a food container will open it (so that it can be eaten from)";
+    private static final String LEFT_CLICK_OPENS_FOOD_CONTAINERS_COMMENT = "If true, left clicking the air while holding a food container will open it (so that it can be eaten from)";
     /*
      * FOOD GROUPS
      */
     @Deprecated
     private static final String CATEGORY_FOODGROUPS = "foodgroups";
 
-    private static final String CATEGORY_FOODGROUPS_COMMENT =
-            "Food groups are defined using .json files in /config/SpiceOfLife/\n"
-                    + "See /config/SpiceOfLife/example-food-group.json";
+    private static final String CATEGORY_FOODGROUPS_COMMENT = "Food groups are defined using .json files in /config/SpiceOfLife/\n"
+            + "See /config/SpiceOfLife/example-food-group.json";
     // whether or not food modifier is actually enabled (we either are the server or know the server has it enabled)
     public static boolean FOOD_MODIFIER_ENABLED = false;
     // the value written in the config file
@@ -171,8 +168,7 @@ public class ModConfig implements IPackable, IPacketProcessor {
     public static boolean AFFECT_FOOD_HUNGER_VALUES = ModConfig.AFFECT_FOOD_HUNGER_VALUES_DEFAULT;
     public static boolean AFFECT_NEGATIVE_FOOD_HUNGER_VALUES = ModConfig.AFFECT_NEGATIVE_FOOD_HUNGER_VALUES_DEFAULT;
     public static boolean AFFECT_FOOD_SATURATION_MODIFIERS = ModConfig.AFFECT_FOOD_SATURATION_MODIFIERS_DEFAULT;
-    public static boolean AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS =
-            ModConfig.AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_DEFAULT;
+    public static boolean AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS = ModConfig.AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_DEFAULT;
     public static float FOOD_EATING_SPEED_MODIFIER = ModConfig.FOOD_EATING_SPEED_MODIFIER_DEFAULT;
     public static int FOOD_EATING_DURATION_MAX = ModConfig.FOOD_EATING_DURATION_MAX_DEFAULT;
     public static String FOOD_MODIFIER_FORMULA = ModConfig.FOOD_MODIFIER_FORMULA_STRING_DEFAULT;
@@ -197,11 +193,10 @@ public class ModConfig implements IPackable, IPacketProcessor {
          */
         config.getCategory(CATEGORY_MAIN).setComment(CATEGORY_MAIN_COMMENT);
         FOOD_MODIFIER_ENABLED_CONFIG_VAL = config.get(
-                        CATEGORY_MAIN,
-                        FOOD_MODIFIER_ENABLED_NAME,
-                        FOOD_MODIFIER_ENABLED_DEFAULT,
-                        FOOD_MODIFIER_ENABLED_COMMENT)
-                .getBoolean(FOOD_MODIFIER_ENABLED_DEFAULT);
+                CATEGORY_MAIN,
+                FOOD_MODIFIER_ENABLED_NAME,
+                FOOD_MODIFIER_ENABLED_DEFAULT,
+                FOOD_MODIFIER_ENABLED_COMMENT).getBoolean(FOOD_MODIFIER_ENABLED_DEFAULT);
 
         // only use the config value immediately when server-side; the client assumes false until the server syncs the
         // config
@@ -213,11 +208,8 @@ public class ModConfig implements IPackable, IPacketProcessor {
          */
         config.getCategory(CATEGORY_DEV).setComment(CATEGORY_DEV_COMMENT);
 
-        DEV_LOGGING_ENABLED = config.get(
-                        CATEGORY_DEV,
-                        DEV_LOGGING_ENABLED_NAME,
-                        DEV_LOGGING_ENABLED_DEFAULT,
-                        DEV_LOGGING_ENABLED_COMMENT)
+        DEV_LOGGING_ENABLED = config
+                .get(CATEGORY_DEV, DEV_LOGGING_ENABLED_NAME, DEV_LOGGING_ENABLED_DEFAULT, DEV_LOGGING_ENABLED_COMMENT)
                 .getBoolean(DEV_LOGGING_ENABLED_DEFAULT);
 
         /*
@@ -232,92 +224,84 @@ public class ModConfig implements IPackable, IPacketProcessor {
                 FOOD_MODIFIER_FORMULA_STRING_COMMENT);
 
         // enforce the new default if the config has the old default
-        if (FOOD_MODIFIER_PROPERTY
-                .getString()
+        if (FOOD_MODIFIER_PROPERTY.getString()
                 .equals("MAX(0, (1 - count/12))^MAX(0, food_hunger_value-ROUND(MAX(0, 1 - count/12), 0))"))
             FOOD_MODIFIER_PROPERTY.set(FOOD_MODIFIER_FORMULA_STRING_DEFAULT);
 
         FOOD_MODIFIER_FORMULA = FOOD_MODIFIER_PROPERTY.getString();
 
         FOOD_HISTORY_LENGTH = config.get(
-                        CATEGORY_SERVER,
-                        FOOD_HISTORY_LENGTH_NAME,
-                        FOOD_HISTORY_LENGTH_DEFAULT,
-                        FOOD_HISTORY_LENGTH_COMMENT)
-                .getInt(FOOD_HISTORY_LENGTH_DEFAULT);
-        FOOD_HISTORY_PERSISTS_THROUGH_DEATH = config.get(
+                CATEGORY_SERVER,
+                FOOD_HISTORY_LENGTH_NAME,
+                FOOD_HISTORY_LENGTH_DEFAULT,
+                FOOD_HISTORY_LENGTH_COMMENT).getInt(FOOD_HISTORY_LENGTH_DEFAULT);
+        FOOD_HISTORY_PERSISTS_THROUGH_DEATH = config
+                .get(
                         CATEGORY_SERVER,
                         FOOD_HISTORY_PERSISTS_THROUGH_DEATH_NAME,
                         FOOD_HISTORY_PERSISTS_THROUGH_DEATH_DEFAULT,
                         FOOD_HISTORY_PERSISTS_THROUGH_DEATH_COMMENT)
                 .getBoolean(FOOD_HISTORY_PERSISTS_THROUGH_DEATH_DEFAULT);
         FOOD_EATEN_THRESHOLD = config.get(
-                        CATEGORY_SERVER,
-                        FOOD_EATEN_THRESHOLD_NAME,
-                        FOOD_EATEN_THRESHOLD_DEFAULT,
-                        FOOD_EATEN_THRESHOLD_COMMENT)
-                .getInt(FOOD_EATEN_THRESHOLD_DEFAULT);
+                CATEGORY_SERVER,
+                FOOD_EATEN_THRESHOLD_NAME,
+                FOOD_EATEN_THRESHOLD_DEFAULT,
+                FOOD_EATEN_THRESHOLD_COMMENT).getInt(FOOD_EATEN_THRESHOLD_DEFAULT);
         USE_FOOD_GROUPS_AS_WHITELISTS = config.get(
-                        CATEGORY_SERVER,
-                        USE_FOOD_GROUPS_AS_WHITELISTS_NAME,
-                        USE_FOOD_GROUPS_AS_WHITELISTS_DEFAULT,
-                        USE_FOOD_GROUPS_AS_WHITELISTS_COMMENT)
-                .getBoolean(USE_FOOD_GROUPS_AS_WHITELISTS_DEFAULT);
+                CATEGORY_SERVER,
+                USE_FOOD_GROUPS_AS_WHITELISTS_NAME,
+                USE_FOOD_GROUPS_AS_WHITELISTS_DEFAULT,
+                USE_FOOD_GROUPS_AS_WHITELISTS_COMMENT).getBoolean(USE_FOOD_GROUPS_AS_WHITELISTS_DEFAULT);
         AFFECT_FOOD_HUNGER_VALUES = config.get(
-                        CATEGORY_SERVER,
-                        AFFECT_FOOD_HUNGER_VALUES_NAME,
-                        AFFECT_FOOD_HUNGER_VALUES_DEFAULT,
-                        AFFECT_FOOD_HUNGER_VALUES_COMMENT)
-                .getBoolean(AFFECT_FOOD_HUNGER_VALUES_DEFAULT);
-        AFFECT_NEGATIVE_FOOD_HUNGER_VALUES = config.get(
+                CATEGORY_SERVER,
+                AFFECT_FOOD_HUNGER_VALUES_NAME,
+                AFFECT_FOOD_HUNGER_VALUES_DEFAULT,
+                AFFECT_FOOD_HUNGER_VALUES_COMMENT).getBoolean(AFFECT_FOOD_HUNGER_VALUES_DEFAULT);
+        AFFECT_NEGATIVE_FOOD_HUNGER_VALUES = config
+                .get(
                         CATEGORY_SERVER,
                         AFFECT_NEGATIVE_FOOD_HUNGER_VALUES_NAME,
                         AFFECT_NEGATIVE_FOOD_HUNGER_VALUES_DEFAULT,
                         AFFECT_NEGATIVE_FOOD_HUNGER_VALUES_COMMENT)
                 .getBoolean(AFFECT_NEGATIVE_FOOD_HUNGER_VALUES_DEFAULT);
         AFFECT_FOOD_SATURATION_MODIFIERS = config.get(
-                        CATEGORY_SERVER,
-                        AFFECT_FOOD_SATURATION_MODIFIERS_NAME,
-                        AFFECT_FOOD_SATURATION_MODIFIERS_DEFAULT,
-                        AFFECT_FOOD_SATURATION_MODIFIERS_COMMENT)
-                .getBoolean(AFFECT_FOOD_SATURATION_MODIFIERS_DEFAULT);
-        AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS = config.get(
+                CATEGORY_SERVER,
+                AFFECT_FOOD_SATURATION_MODIFIERS_NAME,
+                AFFECT_FOOD_SATURATION_MODIFIERS_DEFAULT,
+                AFFECT_FOOD_SATURATION_MODIFIERS_COMMENT).getBoolean(AFFECT_FOOD_SATURATION_MODIFIERS_DEFAULT);
+        AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS = config
+                .get(
                         CATEGORY_SERVER,
                         AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_NAME,
                         AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_DEFAULT,
                         AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_COMMENT)
                 .getBoolean(AFFECT_NEGATIVE_FOOD_SATURATION_MODIFIERS_DEFAULT);
         FOOD_EATING_SPEED_MODIFIER = (float) config.get(
-                        CATEGORY_SERVER,
-                        FOOD_EATING_SPEED_MODIFIER_NAME,
-                        FOOD_EATING_SPEED_MODIFIER_DEFAULT,
-                        FOOD_EATING_SPEED_MODIFIER_COMMENT)
-                .getDouble(FOOD_EATING_SPEED_MODIFIER_DEFAULT);
+                CATEGORY_SERVER,
+                FOOD_EATING_SPEED_MODIFIER_NAME,
+                FOOD_EATING_SPEED_MODIFIER_DEFAULT,
+                FOOD_EATING_SPEED_MODIFIER_COMMENT).getDouble(FOOD_EATING_SPEED_MODIFIER_DEFAULT);
         FOOD_EATING_DURATION_MAX = config.get(
-                        CATEGORY_SERVER,
-                        FOOD_EATING_DURATION_MAX_NAME,
-                        FOOD_EATING_DURATION_MAX_DEFAULT,
-                        FOOD_EATING_DURATION_MAX_COMMENT)
-                .getInt(FOOD_EATING_DURATION_MAX_DEFAULT);
+                CATEGORY_SERVER,
+                FOOD_EATING_DURATION_MAX_NAME,
+                FOOD_EATING_DURATION_MAX_DEFAULT,
+                FOOD_EATING_DURATION_MAX_COMMENT).getInt(FOOD_EATING_DURATION_MAX_DEFAULT);
         GIVE_FOOD_JOURNAL_ON_START = config.get(
-                        CATEGORY_SERVER,
-                        GIVE_FOOD_JOURNAL_ON_START_NAME,
-                        GIVE_FOOD_JOURNAL_ON_START_DEFAULT,
-                        GIVE_FOOD_JOURNAL_ON_START_COMMENT)
-                .getBoolean(GIVE_FOOD_JOURNAL_ON_START_DEFAULT);
+                CATEGORY_SERVER,
+                GIVE_FOOD_JOURNAL_ON_START_NAME,
+                GIVE_FOOD_JOURNAL_ON_START_DEFAULT,
+                GIVE_FOOD_JOURNAL_ON_START_COMMENT).getBoolean(GIVE_FOOD_JOURNAL_ON_START_DEFAULT);
         FOOD_CONTAINERS_MAX_STACKSIZE = config.get(
-                        CATEGORY_SERVER,
-                        FOOD_CONTAINERS_MAX_STACKSIZE_NAME,
-                        FOOD_CONTAINERS_MAX_STACKSIZE_DEFAULT,
-                        FOOD_CONTAINERS_MAX_STACKSIZE_COMMENT)
-                .getInt(FOOD_CONTAINERS_MAX_STACKSIZE_DEFAULT);
+                CATEGORY_SERVER,
+                FOOD_CONTAINERS_MAX_STACKSIZE_NAME,
+                FOOD_CONTAINERS_MAX_STACKSIZE_DEFAULT,
+                FOOD_CONTAINERS_MAX_STACKSIZE_COMMENT).getInt(FOOD_CONTAINERS_MAX_STACKSIZE_DEFAULT);
 
         FOOD_HUNGER_ROUNDING_MODE_STRING = config.get(
-                        CATEGORY_SERVER,
-                        FOOD_HUNGER_ROUNDING_MODE_NAME,
-                        FOOD_HUNGER_ROUNDING_MODE_DEFAULT,
-                        FOOD_HUNGER_ROUNDING_MODE_COMMENT)
-                .getString();
+                CATEGORY_SERVER,
+                FOOD_HUNGER_ROUNDING_MODE_NAME,
+                FOOD_HUNGER_ROUNDING_MODE_DEFAULT,
+                FOOD_HUNGER_ROUNDING_MODE_COMMENT).getString();
         setRoundingMode();
 
         /*
@@ -326,11 +310,10 @@ public class ModConfig implements IPackable, IPacketProcessor {
         config.getCategory(CATEGORY_CLIENT).setComment(CATEGORY_CLIENT_COMMENT);
 
         LEFT_CLICK_OPENS_FOOD_CONTAINERS = config.get(
-                        CATEGORY_CLIENT,
-                        LEFT_CLICK_OPENS_FOOD_CONTAINERS_NAME,
-                        LEFT_CLICK_OPENS_FOOD_CONTAINERS_DEFAULT,
-                        LEFT_CLICK_OPENS_FOOD_CONTAINERS_COMMENT)
-                .getBoolean(LEFT_CLICK_OPENS_FOOD_CONTAINERS_DEFAULT);
+                CATEGORY_CLIENT,
+                LEFT_CLICK_OPENS_FOOD_CONTAINERS_NAME,
+                LEFT_CLICK_OPENS_FOOD_CONTAINERS_DEFAULT,
+                LEFT_CLICK_OPENS_FOOD_CONTAINERS_COMMENT).getBoolean(LEFT_CLICK_OPENS_FOOD_CONTAINERS_DEFAULT);
 
         /*
          * FOOD GROUPS
@@ -432,19 +415,23 @@ public class ModConfig implements IPackable, IPacketProcessor {
     }
 
     public enum RoundingMode {
+
         ROUND("round") {
+
             @Override
             public double round(double val) {
                 return Math.round(val);
             }
         },
         FLOOR("floor") {
+
             @Override
             public double round(double val) {
                 return Math.floor(val);
             }
         },
         CEILING("ceiling") {
+
             @Override
             public double round(double val) {
                 return Math.ceil(val);

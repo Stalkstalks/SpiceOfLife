@@ -1,23 +1,27 @@
 package squeek.spiceoflife.foodtracker.foodgroups;
 
-import com.google.gson.annotations.SerializedName;
-import cpw.mods.fml.common.registry.GameRegistry;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
+
 import squeek.spiceoflife.compat.IByteIO;
 import squeek.spiceoflife.foodtracker.FoodModifier;
 import squeek.spiceoflife.helpers.OreDictionaryHelper;
 import squeek.spiceoflife.interfaces.IPackable;
 
+import com.google.gson.annotations.SerializedName;
+import cpw.mods.fml.common.registry.GameRegistry;
+
 public class FoodGroup implements IPackable {
+
     static final transient EnumChatFormatting DEFAULT_FORMATTING = EnumChatFormatting.GRAY;
     public transient String identifier;
     public transient EnumChatFormatting formatting;
@@ -48,9 +52,8 @@ public class FoodGroup implements IPackable {
     }
 
     public void initFromConfig() {
-        if (foodStringsByType == null)
-            throw new RuntimeException(
-                    toString() + " food group (" + identifier + ".json) missing required \"food\" property");
+        if (foodStringsByType == null) throw new RuntimeException(
+                toString() + " food group (" + identifier + ".json) missing required \"food\" property");
 
         formatting = EnumChatFormatting.getValueByName(color);
         if (formatting == null) formatting = DEFAULT_FORMATTING;
