@@ -32,8 +32,10 @@ public class CommandFoodList extends CommandBase {
     @Override
     public List addTabCompletionOptions(ICommandSender commandSender, String[] curArgs) {
         if (curArgs.length == 1) return Arrays.asList("size", "sync");
-        else if (curArgs.length == 2)
-            return getListOfStringsMatchingLastWord(curArgs, MinecraftServer.getServer().getAllUsernames());
+        else if (curArgs.length == 2) return getListOfStringsMatchingLastWord(
+            curArgs,
+            MinecraftServer.getServer()
+                .getAllUsernames());
         else return null;
     }
 
@@ -63,33 +65,33 @@ public class CommandFoodList extends CommandBase {
         if (args.length > 0) {
             final boolean isOp = commandSender.canCommandSenderUseCommand(4, "targetOtherPlayer");
             final EntityPlayerMP player = (isOp && args.length > 1) ? getPlayer(commandSender, args[1])
-                    : getCommandSenderAsPlayer(commandSender);
+                : getCommandSenderAsPlayer(commandSender);
             final FoodHistory foodHistory = FoodHistory.get(player);
 
             if (args[0].equals("size")) {
                 final ProgressInfo progressInfo = foodHistory.getProgressInfo();
-                final int foodsEaten = progressInfo.foodsHaunchesEaten;
+                final int foodsEaten = progressInfo.foodsPointsEaten;
                 final int milestone = progressInfo.milestonesAchieved();
-                final int foodsUntilNextMilestone = progressInfo.foodsUntilNextMilestone();
+                final int foodsUntilNextMilestone = progressInfo.foodPointsUntilNextMilestone();
 
                 commandSender.addChatMessage(
-                        new ChatComponentText(
-                                "" + EnumChatFormatting.BOLD
-                                        + EnumChatFormatting.DARK_AQUA
-                                        + player.getDisplayName()
-                                        + "'s"
-                                        + EnumChatFormatting.RESET
-                                        + " food stats:"));
+                    new ChatComponentText(
+                        "" + EnumChatFormatting.BOLD
+                            + EnumChatFormatting.DARK_AQUA
+                            + player.getDisplayName()
+                            + "'s"
+                            + EnumChatFormatting.RESET
+                            + " food stats:"));
                 commandSender.addChatMessage(new ChatComponentText("Half-Shanks worth eaten: " + foodsEaten));
                 commandSender.addChatMessage(
-                        new ChatComponentText("Bonus Hearts: " + (milestone * ProgressInfo.HEARTS_PER_MILESTONE)));
+                    new ChatComponentText("Bonus Hearts: " + (milestone * ProgressInfo.HEARTS_PER_MILESTONE)));
                 commandSender.addChatMessage(
-                        new ChatComponentText("Half-Shanks until next bonus heart: " + foodsUntilNextMilestone));
+                    new ChatComponentText("Half-Shanks until next bonus heart: " + foodsUntilNextMilestone));
                 return;
             } else if (args[0].equals("sync")) {
                 FoodTracker.syncFoodHistory(foodHistory);
                 commandSender
-                        .addChatMessage(new ChatComponentText("Synced food history for " + player.getDisplayName()));
+                    .addChatMessage(new ChatComponentText("Synced food history for " + player.getDisplayName()));
                 return;
             }
         }

@@ -7,6 +7,8 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 
+import squeek.spiceoflife.ModConfig;
+
 public class MaxHealthHandler {
 
     private static final UUID SOL_HEALTH_MODIFIER_ID = UUID.fromString("f88d6ac1-4193-4ff0-85f5-f0357fe89d17");
@@ -16,10 +18,13 @@ public class MaxHealthHandler {
             return false;
         }
 
-        final IAttributeInstance attribute = player.getAttributeMap()
-                .getAttributeInstance(SharedMonsterAttributes.maxHealth);
-        final AttributeModifier prevModifier = attribute.getModifier(SOL_HEALTH_MODIFIER_ID);
+        if (!ModConfig.EXTRA_HEARTS_ENABLE) {
+            return false;
+        }
 
+        final IAttributeInstance attribute = player.getAttributeMap()
+            .getAttributeInstance(SharedMonsterAttributes.maxHealth);
+        final AttributeModifier prevModifier = attribute.getModifier(SOL_HEALTH_MODIFIER_ID);
         final FoodHistory foodHistory = FoodHistory.get(player);
         ProgressInfo progressInfo = foodHistory.getProgressInfo();
         final int milestonesAchieved = progressInfo.milestonesAchieved();
@@ -28,10 +33,10 @@ public class MaxHealthHandler {
         boolean hasChanged = prevModifier == null || prevModifier.getAmount() != totalHealthModifier;
 
         AttributeModifier modifier = new AttributeModifier(
-                SOL_HEALTH_MODIFIER_ID,
-                "Health gained from trying new foods",
-                totalHealthModifier,
-                0);
+            SOL_HEALTH_MODIFIER_ID,
+            "Health gained from trying new foods",
+            totalHealthModifier,
+            0);
 
         updateHealthModifier(player, modifier);
 
@@ -41,7 +46,8 @@ public class MaxHealthHandler {
     private static void updateHealthModifier(EntityPlayer player, AttributeModifier modifier) {
         float oldMax = player.getMaxHealth();
 
-        IAttributeInstance attribute = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+        IAttributeInstance attribute = player.getAttributeMap()
+            .getAttributeInstance(SharedMonsterAttributes.maxHealth);
         attribute.removeModifier(modifier);
         attribute.applyModifier(modifier);
 

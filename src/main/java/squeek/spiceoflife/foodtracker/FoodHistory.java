@@ -81,7 +81,8 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
         for (FoodEaten foodEaten : recentHistory) {
             if (foodEaten.itemStack == null) continue;
 
-            if (food.isItemEqual(foodEaten.itemStack) || foodEaten.getFoodGroups().contains(foodGroup)) {
+            if (food.isItemEqual(foodEaten.itemStack) || foodEaten.getFoodGroups()
+                .contains(foodGroup)) {
                 count += 1;
             }
         }
@@ -106,7 +107,7 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
             if (foodEaten.itemStack == null) continue;
 
             if (food.isItemEqual(foodEaten.itemStack)
-                    || MiscHelper.collectionsOverlap(foodGroups, foodEaten.getFoodGroups())) {
+                || MiscHelper.collectionsOverlap(foodGroups, foodEaten.getFoodGroups())) {
                 return true;
             }
         }
@@ -124,7 +125,8 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
         for (FoodEaten foodEaten : recentHistory) {
             if (foodEaten.itemStack == null) continue;
 
-            if (food.isItemEqual(foodEaten.itemStack) || foodEaten.getFoodGroups().contains(foodGroup)) {
+            if (food.isItemEqual(foodEaten.itemStack) || foodEaten.getFoodGroups()
+                .contains(foodGroup)) {
                 totalHunger += foodEaten.foodValues.hunger;
                 totalSaturation += foodEaten.foodValues.getSaturationIncrement();
             }
@@ -269,21 +271,22 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
 
         // this function sends a packet to the client
         world.func_147487_a(
-                type,
-                (float) player.posX,
-                (float) player.posY + 2,
-                (float) player.posZ,
-                count,
-                1F,
-                1F,
-                1F,
-                0.20000000298023224D);
+            type,
+            (float) player.posX,
+            (float) player.posY + 2,
+            (float) player.posZ,
+            count,
+            1F,
+            1F,
+            1F,
+            0.20000000298023224D);
     }
 
     @Override
     // null compound parameter means save persistent data only
     public void writeToNBTData(NBTTagCompound data) {
-        NBTTagCompound rootPersistentCompound = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        NBTTagCompound rootPersistentCompound = player.getEntityData()
+            .getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
         NBTTagCompound nonPersistentCompound = new NBTTagCompound();
         NBTTagCompound persistentCompound = new NBTTagCompound();
 
@@ -298,9 +301,15 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
             }
         }
         if (fullHistory.size() > 0) {
-            NBTTagCompound nbtFullHistory = new NBTTagCompound();
-            fullHistory.writeToNBTData(nbtFullHistory);
-            persistentCompound.setTag("FullHistory", nbtFullHistory);
+            if (data != null || ModConfig.FOOD_MILESTONES_PERSISTS_THROUGH_DEATH) {
+                NBTTagCompound nbtFullHistory = new NBTTagCompound();
+
+                fullHistory.writeToNBTData(nbtFullHistory);
+
+                if (ModConfig.FOOD_MILESTONES_PERSISTS_THROUGH_DEATH)
+                    persistentCompound.setTag("FullHistory", nbtFullHistory);
+                else nonPersistentCompound.setTag("FullHistory", nbtFullHistory);
+            }
         }
         if (totalFoodsEatenAllTime > 0) {
             persistentCompound.setInteger("Total", totalFoodsEatenAllTime);
@@ -316,8 +325,10 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
 
         if (!persistentCompound.hasNoTags()) rootPersistentCompound.setTag(TAG_KEY, persistentCompound);
 
-        if (!player.getEntityData().hasKey(EntityPlayer.PERSISTED_NBT_TAG))
-            player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, rootPersistentCompound);
+        if (!player.getEntityData()
+            .hasKey(EntityPlayer.PERSISTED_NBT_TAG))
+            player.getEntityData()
+                .setTag(EntityPlayer.PERSISTED_NBT_TAG, rootPersistentCompound);
     }
 
     @Override
@@ -331,15 +342,23 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
     @Override
     // null compound parameter means load persistent data only
     public void readFromNBTData(NBTTagCompound data) {
-        NBTTagCompound rootPersistentCompound = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        NBTTagCompound rootPersistentCompound = player.getEntityData()
+            .getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
         NBTTagCompound persistentCompound = rootPersistentCompound.getCompoundTag(TAG_KEY);
 
         if ((data != null && data.hasKey(TAG_KEY)) || rootPersistentCompound.hasKey(TAG_KEY)) {
             NBTTagCompound nonPersistentCompound = data != null ? data.getCompoundTag(TAG_KEY) : new NBTTagCompound();
 
             NBTTagCompound nbtHistory = ModConfig.FOOD_HISTORY_PERSISTS_THROUGH_DEATH
-                    ? persistentCompound.getCompoundTag("History")
-                    : nonPersistentCompound.getCompoundTag("History");
+                ? persistentCompound.getCompoundTag("History")
+                : nonPersistentCompound.getCompoundTag("History");
+
+            NBTTagCompound nbtFullHistory = ModConfig.FOOD_MILESTONES_PERSISTS_THROUGH_DEATH
+                ? persistentCompound.getCompoundTag("FullHistory")
+                : nonPersistentCompound.getCompoundTag("FullHistory");
+
+            fullHistory.readFromNBTData(nbtHistory);
+            fullHistory.readFromNBTData(nbtFullHistory);
 
             recentHistory.readFromNBTData(nbtHistory);
 
@@ -348,6 +367,5 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
             ticksActive = persistentCompound.getLong("Ticks");
         }
 
-        fullHistory.readFromNBTData(persistentCompound.getCompoundTag("FullHistory"));
     }
 }
