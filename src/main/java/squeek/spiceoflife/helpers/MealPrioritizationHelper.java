@@ -11,6 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import squeek.applecore.api.food.FoodValues;
+import squeek.spiceoflife.foodtracker.FoodHistory;
 import squeek.spiceoflife.foodtracker.FoodModifier;
 
 public class MealPrioritizationHelper {
@@ -22,16 +23,16 @@ public class MealPrioritizationHelper {
 
     public static int findBestFoodForPlayerToEat(EntityPlayer player, IInventory inventory) {
         List<InventoryFoodInfo> allFoodInfo = getFoodInfoFromInventoryForPlayer(player, inventory);
-        InventoryFoodInfo bestFoodInfo = null;
+        FoodHistory foodHistory = FoodHistory.get(player);
 
-        if (allFoodInfo.size() > 0) {
-            int hungerMissingFromPlayer = 20 - player.getFoodStats()
-                .getFoodLevel();
-            allFoodInfo.sort(new FoodInfoComparator(hungerMissingFromPlayer));
-            bestFoodInfo = allFoodInfo.get(0);
+        int bestIndex = 0;
+        for (int i = 0; i < allFoodInfo.size(); i++) {
+            if (FoodModifier.getNutrientGain(foodHistory, allFoodInfo.get(i).itemStack)
+                > FoodModifier.getNutrientGain(foodHistory, allFoodInfo.get(bestIndex).itemStack)) bestIndex = i;
         }
 
-        return bestFoodInfo != null ? bestFoodInfo.slotNum : 0;
+        return allFoodInfo.get(bestIndex).slotNum;
+
     }
 
     public static List<InventoryFoodInfo> getFoodInfoFromInventoryForPlayer(EntityPlayer player, IInventory inventory) {

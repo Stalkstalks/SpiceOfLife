@@ -49,7 +49,7 @@ public class FoodTracker {
     public static void addFoodEatenByPlayer(FoodEaten foodEaten, EntityPlayer player) {
         // client needs to be told by the server otherwise the client can get out of sync easily
         if (!player.worldObj.isRemote && player instanceof EntityPlayerMP) PacketDispatcher.get()
-            .sendTo(new PacketFoodHistory(foodEaten), (EntityPlayerMP) player);
+            .sendTo(new PacketFoodHistory(foodEaten, player), (EntityPlayerMP) player);
         FoodHistory.get(player)
             .addFood(foodEaten);
     }

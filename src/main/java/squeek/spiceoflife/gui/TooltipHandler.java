@@ -105,12 +105,13 @@ public class TooltipHandler {
                             + EnumChatFormatting.DARK_GRAY));
 
             if (shouldShowFoodGroupDetails) {
+                toolTipStringsToAdd.add(getFullHistoryToolTip(foodHistory, event.itemStack));
                 int foodGroupsToShow = Math.max(1, visibleFoodGroups.size());
                 FoodGroup[] visibleFoodGroupsArray = visibleFoodGroups.toArray(new FoodGroup[visibleFoodGroups.size()]);
 
                 for (int i = 0; i < foodGroupsToShow; i++) {
                     FoodGroup foodGroup = i < visibleFoodGroupsArray.length ? visibleFoodGroupsArray[i] : null;
-                    boolean shouldShowNutritionalValue = foodGroupsToShow > 1;
+                    boolean shouldShowNutritionalValue = foodGroupsToShow > 0;
                     String prefix = (foodGroupsToShow > 1 ? bulletPoint : "");
                     toolTipStringsToAdd.add(
                         prefix + getEatenRecentlyTooltip(
@@ -118,7 +119,6 @@ public class TooltipHandler {
                             event.itemStack,
                             foodGroup,
                             shouldShowNutritionalValue));
-                    toolTipStringsToAdd.add(getFullHistoryToolTip(foodHistory, event.itemStack));
                 }
             }
         }
@@ -144,23 +144,22 @@ public class TooltipHandler {
     }
 
     public String getNutritionalValueString(float foodModifier) {
-        return ColorHelper.getRelativeColor(foodModifier, 0D, 1D) + df.format(foodModifier * 100f) + "%";
+        return ColorHelper.getNutrientColor(foodModifier) + df.format(foodModifier * 100f) + "%";
     }
 
     public String getEatenRecentlyTooltip(FoodHistory foodHistory, ItemStack itemStack, FoodGroup foodGroup,
         boolean shouldShowNutritionalValue) {
         final int count = foodHistory.getFoodCountForFoodGroup(itemStack, foodGroup);
-        final String prefix = "Diminishing Returns: "
-            + (foodGroup != null ? foodGroup.formatString(EnumChatFormatting.ITALIC.toString() + foodGroup) + " " : "")
-            + EnumChatFormatting.RESET.toString()
-            + EnumChatFormatting.DARK_AQUA.toString()
-            + EnumChatFormatting.ITALIC;
+        final String prefix = (foodGroup != null
+            ? foodGroup.formatString(EnumChatFormatting.DARK_AQUA.toString() + foodGroup) + " "
+            : "") + EnumChatFormatting.RESET.toString();
         final String eatenRecently;
         final String nutritionalValue = shouldShowNutritionalValue
             ? EnumChatFormatting.DARK_GRAY + " ["
-                + getNutritionalValueString(FoodModifier.getFoodGroupModifier(foodHistory, itemStack, foodGroup))
+                + ColorHelper.getNutrientColor(foodHistory.getFoodGroupsPercentage(foodGroup.identifier))
+                + foodHistory.getFoodGroupsPercentage(foodGroup.identifier)
                 + EnumChatFormatting.DARK_GRAY
-                + "]"
+                + "%]"
             : "";
         if (count > 0) {
             if (ModConfig.USE_HUNGER_QUEUE) {

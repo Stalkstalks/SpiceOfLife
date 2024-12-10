@@ -22,6 +22,16 @@ public class ColorHelper {
         return colorRange[Math.max(0, Math.min(colorRange.length - 1, index))].toString();
     }
 
+    public static String getNutrientColor(double val) {
+        if (val == 0.0f) return EnumChatFormatting.DARK_RED.toString();
+        if (val < 0.35f) return EnumChatFormatting.RED.toString();
+        if (val < 1.0f) return EnumChatFormatting.YELLOW.toString();
+        if (val < 1.35f) return EnumChatFormatting.WHITE.toString();
+        if (val < 1.68f) return EnumChatFormatting.GREEN.toString();
+
+        return EnumChatFormatting.DARK_GREEN.toString();
+    }
+
     public static int getRelativeColorInt(double val, double min, double max) {
         if (min == max) return 0x000000;
 

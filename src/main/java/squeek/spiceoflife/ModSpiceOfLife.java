@@ -17,6 +17,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.relauncher.Side;
+import squeek.spiceoflife.foodtracker.FoodHistoryEventHandler;
 import squeek.spiceoflife.foodtracker.FoodLists;
 import squeek.spiceoflife.foodtracker.FoodModifier;
 import squeek.spiceoflife.foodtracker.FoodTracker;
@@ -57,6 +58,7 @@ public class ModSpiceOfLife {
             .register(foodTracker);
         MinecraftForge.EVENT_BUS.register(foodTracker);
         MinecraftForge.EVENT_BUS.register(new FoodModifier());
+        MinecraftForge.EVENT_BUS.register(new FoodHistoryEventHandler());
 
         if (event.getSide() == Side.CLIENT) {
             MinecraftForge.EVENT_BUS.register(new TooltipHandler());

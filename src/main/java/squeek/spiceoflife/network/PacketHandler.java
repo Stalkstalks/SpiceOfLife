@@ -21,7 +21,8 @@ public class PacketHandler implements IMessageHandler<PacketBase, PacketBase> {
         FoodHistory(PacketFoodHistory.class),
         FoodEatenAllTime(PacketFoodEatenAllTime.class),
         ToggleFoodContainer(PacketToggleFoodContainer.class, Side.SERVER),
-        FoodGroup(PacketFoodGroup.class);
+        FoodGroup(PacketFoodGroup.class),
+        NutritionExhaust(PacketNutritionExhaust.class);
 
         public final Class<? extends PacketBase> packet;
 

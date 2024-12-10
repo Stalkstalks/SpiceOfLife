@@ -1,8 +1,11 @@
 package squeek.spiceoflife.foodtracker;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -11,9 +14,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.IExtendedEntityProperties;
+import net.minecraftforge.common.util.Constants;
 
 import squeek.applecore.api.food.FoodValues;
 import squeek.spiceoflife.ModConfig;
@@ -33,9 +38,16 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
 
     public static final String TAG_KEY = ModInfo.MODID + "History";
     public final EntityPlayer player;
+
     public int totalFoodsEatenAllTime = 0;
     public boolean wasGivenFoodJournal = false;
     public long ticksActive = 0;
+
+    public Map<String, Integer> foodGroupPoints = new HashMap<String, Integer>();
+    public static final int zeroMin = 175;
+    public static final int fullMin = 500;
+    public static final int fullMax = 675;
+    public static final int zeroMax = 840;
     protected FoodQueue recentHistory = FoodHistory.getNewFoodQueue();
     protected FoodSet fullHistory = new FoodSet();
 
@@ -48,7 +60,14 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
 
     public FoodHistory(EntityPlayer player) {
         this.player = player;
-        if (player != null) player.registerExtendedProperties(FoodHistory.TAG_KEY, this);
+        if (player != null) {
+            player.registerExtendedProperties(FoodHistory.TAG_KEY, this);
+
+            Collection<FoodGroup> foodGroups = FoodGroupRegistry.getFoodGroups();
+            for (FoodGroup foodGroup : foodGroups) {
+                foodGroupPoints.put(foodGroup.identifier, 0);
+            }
+        }
     }
 
     public static FoodHistory get(EntityPlayer player) {
@@ -145,6 +164,14 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
         return getTotalFoodValuesForFoodGroup(food, null);
     }
 
+    public FoodQueue getHistory() {
+        return recentHistory;
+    }
+
+    public int getHistoryLengthInRelevantUnits() {
+        return ModConfig.USE_HUNGER_QUEUE ? ((FixedHungerQueue) recentHistory).hunger() : recentHistory.size();
+    }
+
     public int getHistoryLength() {
         return ModConfig.USE_HUNGER_QUEUE ? ((FixedHungerQueue) recentHistory).hunger() : recentHistory.size();
     }
@@ -163,6 +190,87 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
         return distinctFoodGroups;
     }
 
+    private void addFoodGroupPoints(FoodEaten foodEaten) {
+        if (foodEaten.itemStack == null) return;
+
+        Set<FoodGroup> relevantFoodGroups = foodEaten.getFoodGroups();
+        for (FoodGroup foodGroup : relevantFoodGroups) {
+            String groupName = foodGroup.identifier;
+            int points = 0;
+
+            if (foodGroupPoints.get(groupName) != null) points = foodGroupPoints.get(groupName);
+
+            double proportion = (1000 - points) * 3 / 500.0;
+
+            points += Math.round(
+                (foodEaten.foodValues.hunger + Math.ceil(foodEaten.foodValues.getSaturationIncrement())) * proportion);
+            if (points > 1000) points = 1000;
+
+            foodGroupPoints.put(groupName, points);
+        }
+    }
+
+    public void exhaustFoodGroupPoints() {
+        for (String identifier : foodGroupPoints.keySet()) {
+            int value = foodGroupPoints.get(identifier);
+            if (value > 0) value--;
+            foodGroupPoints.put(identifier, value);
+        }
+    }
+
+    public int getFoodGroupsAtLeast(int threshold) {
+        int count = 0;
+        for (String identifier : foodGroupPoints.keySet()) {
+            int value = foodGroupPoints.get(identifier);
+            if (value >= threshold) count++;
+        }
+        return count;
+    }
+
+    public int getFoodGroupsAtMost(int threshold) {
+        int count = 0;
+        for (String identifier : foodGroupPoints.keySet()) {
+            int value = foodGroupPoints.get(identifier);
+            if (value <= threshold) count++;
+        }
+        return count;
+    }
+
+    public int getFoodGroupsWithinRange(int max, int min) {
+        int count = 0;
+        for (String identifier : foodGroupPoints.keySet()) {
+            int value = foodGroupPoints.get(identifier);
+            if (max >= value && value >= min) count++;
+        }
+        return count;
+    }
+
+    public float getFoodGroupsBonus() {
+        int count = 0;
+        float modifier = 0.0f;
+        for (String identifier : foodGroupPoints.keySet()) {
+            int value = foodGroupPoints.get(identifier);
+            count++;
+            if (value <= zeroMin) {
+                modifier += 1.0f * value / zeroMin;
+            } else if (value < fullMin) {
+                modifier += 1.0f + ((1.0f * (value - zeroMin)) / (fullMin - zeroMin));
+            } else if (value <= fullMax) {
+                modifier += 2;
+            } else if (value <= zeroMax) {
+                modifier += 2.0f - ((1.0f * (value - fullMax)) / (zeroMax - fullMax));
+            } else if (value <= 1000) {
+                modifier += 1.0f - ((1.0f * (value - zeroMax)) / (1000 - zeroMax));
+            }
+        }
+        return (count < 1) ? 0 : (5.0f * modifier / count);
+    }
+
+    public float getFoodGroupsPercentage(String identifier) {
+        if (foodGroupPoints.containsKey(identifier)) return (foodGroupPoints.get(identifier) / 500f);
+        else return 0f;
+    }
+
     public void reset() {
         recentHistory.clear();
         fullHistory.clear();
@@ -170,6 +278,7 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
         totalFoodsEatenAllTime = 0;
         wasGivenFoodJournal = false;
         ticksActive = 0;
+        foodGroupPoints.clear();
     }
 
     public void invalidateProgressInfo() {
@@ -196,6 +305,13 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
             foodEaten.pack(data);
         }
 
+        data.writeShort(foodGroupPoints.size());
+
+        for (String identifier : foodGroupPoints.keySet()) {
+            data.writeShort(foodGroupPoints.get(identifier));
+            data.writeUTF(identifier);
+        }
+
         data.writeShort(getFullHistory().size());
         getFullHistory().forEach(f -> f.pack(data));
     }
@@ -218,7 +334,14 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
             foodEaten.unpack(data);
             addFood(foodEaten);
         }
+        int foodGroupPointsSize = data.readShort();
 
+        int value = 0;
+        for (int i = 0; i < foodGroupPointsSize; i++) {
+            value = data.readShort();
+            String identifier = data.readUTF();
+            foodGroupPoints.put(identifier, value);
+        }
         short fullHistorySize = data.readShort();
 
         for (int i = 0; i < fullHistorySize; i++) {
@@ -252,6 +375,7 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
     public void addFood(FoodEaten foodEaten, boolean countsTowardsAllTime) {
         if (countsTowardsAllTime) totalFoodsEatenAllTime++;
 
+        addFoodGroupPoints(foodEaten);
         addFoodRecent(foodEaten);
         addFoodFullHistory(foodEaten);
     }
@@ -323,6 +447,20 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
             persistentCompound.setLong("Ticks", ticksActive);
         }
 
+        if (foodGroupPoints.size() > 0) {
+            NBTTagCompound nbtNutrientData = new NBTTagCompound();
+            NBTTagList nbtNutrientList = new NBTTagList();
+            for (String identifier : foodGroupPoints.keySet()) {
+                NBTTagCompound nbtNutrient = new NBTTagCompound();
+                nbtNutrient.setString("NutrientID", identifier);
+                nbtNutrient.setInteger("NutrientValue", foodGroupPoints.get(identifier));
+                nbtNutrientList.appendTag(nbtNutrient);
+            }
+            nbtNutrientData.setTag("Nutrients", nbtNutrientList);
+            if (ModConfig.FOOD_HISTORY_PERSISTS_THROUGH_DEATH) persistentCompound.setTag("Nutrients", nbtNutrientData);
+            else nonPersistentCompound.setTag("Nutrients", nbtNutrientData);
+        }
+
         if (data != null && !nonPersistentCompound.hasNoTags()) data.setTag(TAG_KEY, nonPersistentCompound);
 
         if (!persistentCompound.hasNoTags()) rootPersistentCompound.setTag(TAG_KEY, persistentCompound);
@@ -367,6 +505,16 @@ public class FoodHistory implements IExtendedEntityProperties, ISaveable, IPacka
             totalFoodsEatenAllTime = persistentCompound.getInteger("Total");
             wasGivenFoodJournal = persistentCompound.getBoolean("FoodJournal");
             ticksActive = persistentCompound.getLong("Ticks");
+            NBTTagCompound nbtNutrientData = ModConfig.FOOD_HISTORY_PERSISTS_THROUGH_DEATH
+                ? persistentCompound.getCompoundTag("Nutrients")
+                : nonPersistentCompound.getCompoundTag("Nutrients");
+            NBTTagList nbtNutrientList = nbtNutrientData.getTagList("Nutrients", Constants.NBT.TAG_COMPOUND);
+            for (int i = 0; i < nbtNutrientList.tagCount(); i++) {
+                NBTTagCompound nbtNutrient = nbtNutrientList.getCompoundTagAt(i);
+                String identifier = nbtNutrient.getString("NutrientID");
+                int value = nbtNutrient.getInteger("NutrientValue");
+                foodGroupPoints.put(identifier, value);
+            }
         }
 
     }

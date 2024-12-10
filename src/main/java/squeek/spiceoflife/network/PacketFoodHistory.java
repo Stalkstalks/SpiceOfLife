@@ -23,9 +23,13 @@ public class PacketFoodHistory extends PacketBase {
         this.foodHistory = foodHistory;
     }
 
-    public PacketFoodHistory(FoodEaten foodEaten) {
+    public PacketFoodHistory(FoodEaten foodEaten, EntityPlayer player) {
         this.foodHistory = new FoodHistory();
-        foodHistory.addFood(foodEaten);
+        FoodHistory foodHistory = FoodHistory.get(player);
+        for (String identifier : foodHistory.foodGroupPoints.keySet()) {
+            this.foodHistory.foodGroupPoints.put(identifier, foodHistory.foodGroupPoints.get(identifier));
+        }
+        this.foodHistory.addFood(foodEaten);
     }
 
     @Override
@@ -59,6 +63,12 @@ public class PacketFoodHistory extends PacketBase {
             .forEach(foodHistory::addFoodRecent);
         this.foodHistory.getFullHistory()
             .forEach(foodHistory::addFoodFullHistory);
+
+        if (player.worldObj.isRemote) {
+            for (String identifier : this.foodHistory.foodGroupPoints.keySet()) {
+                foodHistory.foodGroupPoints.put(identifier, this.foodHistory.foodGroupPoints.get(identifier));
+            }
+        }
 
         return null;
     }
